@@ -1,4 +1,4 @@
-# Winter Arc V16.0 backend setup
+# Winter Arc V18.1 backend setup
 
 The app is offline-first. Cloud/community sync is **opt-in** and disabled by default.
 
