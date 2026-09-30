@@ -1,4 +1,4 @@
-# Winter Arc V14.1 backend setup
+# Winter Arc V16.0 backend setup
 
 The app is offline-first. Cloud/community sync is **opt-in** and disabled by default.
 
@@ -39,7 +39,11 @@ Only when a user explicitly enables Community Sync:
 - last seen
 - public-profile preference
 
-Private habit names, journal, sleep, mood, PIN and full local history are not uploaded by this V14.1 sync flow.
+Private habit names, journal, sleep, mood, PIN and full local history are not uploaded by this V16.0 sync flow.
 
 ## 6. Important production note
 The current prototype uses a random device UUID for opt-in writes. For a public production launch, move write operations behind a Supabase Edge Function or authenticated anonymous/user sessions and add rate limiting. The creator dashboard itself should never use a service-role key in browser code.
+
+
+## V16 website-first structure
+The main product is the GitHub Pages website. The user-facing app stays fully usable without the creator dashboard. The dashboard is a separate creator-only page and does not replace or remove the tracker features.

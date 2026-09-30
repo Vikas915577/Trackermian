@@ -1,13 +1,13 @@
 (function(){
 'use strict';
 
-const VERSION='V17.0';
+const VERSION='V16.0';
 const WINTER_ARC_START='2026-10-01';
 const WINTER_ARC_END='2026-12-31';
 const WINTER_ARC_LENGTH=92;
 const COMMUNITY_NS='winter-arc-2026';
-const KEY='progress_tracker_v17';
-const OLD_KEYS=['progress_tracker_v16','progress_tracker_v14_2','progress_tracker_v14_1','progress_tracker_v14','progress_tracker_v13','progress_tracker_v12','progress_tracker_v11','progress_tracker_v10','progress_tracker_v9','progress_tracker_v8','progress_tracker_v6','progress_tracker_v5','progress_tracker_v4','progress_tracker_v3_plain'];
+const KEY='progress_tracker_v16';
+const OLD_KEYS=['progress_tracker_v14_2','progress_tracker_v14_1','progress_tracker_v14','progress_tracker_v13','progress_tracker_v12','progress_tracker_v11','progress_tracker_v10','progress_tracker_v9','progress_tracker_v8','progress_tracker_v6','progress_tracker_v5','progress_tracker_v4','progress_tracker_v3_plain'];
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);
@@ -447,7 +447,7 @@ function isLocked(){return !!data.pinHash&&!sessionUnlocked}
 
 let customSetup=[];
 function updateOnCount(){const n=$$('[data-onpreset] input:checked').length+customSetup.length;const el=$('#onCount');if(el)el.textContent=n+' selected'}
-function finishOnboarding(){const name=$('#onName')?.value.trim()||'';if(!name){alert('Please enter your name.');return}const chosen=[];$$('[data-onpreset]').forEach(b=>{const cb=$('input',b);if(cb?.checked){const p=preset(b.dataset.onpreset);chosen.push({name:b.dataset.onpreset,icon:p?.icon||'✅',private:!!p?.private,difficulty:p?.difficulty||'Medium',action:p?.action||'Do the smallest useful version'})}});customSetup.forEach(n=>chosen.push({name:n,icon:'✅',private:false,difficulty:'Medium',action:'Do the smallest useful version'}));if(!chosen.length){alert('Select at least one habit.');return}data.name=name;if(!data.creatorName)data.creatorName=name;data.habits=chosen.slice(0,15).map(x=>Object.assign({id:uid(),created:today(),time:'',smallWin:x.action,why:''},x));data.onboardingDone=true;data.profileCreated=true;data.journeyStart=today();data.lastLogin=today();save();render();showToast('Your V17 system is ready 🚀')}
+function finishOnboarding(){const name=$('#onName')?.value.trim()||'';if(!name){alert('Please enter your name.');return}const chosen=[];$$('[data-onpreset]').forEach(b=>{const cb=$('input',b);if(cb?.checked){const p=preset(b.dataset.onpreset);chosen.push({name:b.dataset.onpreset,icon:p?.icon||'✅',private:!!p?.private,difficulty:p?.difficulty||'Medium',action:p?.action||'Do the smallest useful version'})}});customSetup.forEach(n=>chosen.push({name:n,icon:'✅',private:false,difficulty:'Medium',action:'Do the smallest useful version'}));if(!chosen.length){alert('Select at least one habit.');return}data.name=name;if(!data.creatorName)data.creatorName=name;data.habits=chosen.slice(0,15).map(x=>Object.assign({id:uid(),created:today(),time:'',smallWin:x.action,why:''},x));data.onboardingDone=true;data.profileCreated=true;data.journeyStart=today();data.lastLogin=today();save();render();showToast('Your V16 system is ready 🚀')}
 
 function bindDomState(){
  updateOnCount();
@@ -538,7 +538,7 @@ try{if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').t
 
 /* ========================= V12 COMPACT UI ========================= */
 
-function finishOnboarding(){const name=$('#onName')?.value.trim()||'';if(!name){alert('Please enter your name.');return}const chosen=[];$$('[data-onpreset]').forEach(b=>{const cb=$('input',b);if(cb?.checked){const p=preset(b.dataset.onpreset);chosen.push({name:b.dataset.onpreset,icon:p?.icon||'✅',private:!!p?.private,difficulty:p?.difficulty||'Medium',action:p?.action||'Do the smallest useful version'})}});customSetup.forEach(n=>chosen.push({name:n,icon:'✅',private:false,difficulty:'Medium',action:'Do the smallest useful version'}));if(!chosen.length){alert('Select at least one habit.');return}data.name=name;if(!data.creatorName)data.creatorName=name;data.habits=chosen.slice(0,15).map(x=>Object.assign({id:uid(),created:today(),time:'',smallWin:x.action,why:''},x));data.onboardingDone=true;data.profileCreated=true;data.journeyStart=today();data.lastLogin=today();save();tab='today';morePanel='';selectedHabit=null;focusMode=false;quickOpen=false;render();showToast('Your V17 system is ready 🚀')}
+function finishOnboarding(){const name=$('#onName')?.value.trim()||'';if(!name){alert('Please enter your name.');return}const chosen=[];$$('[data-onpreset]').forEach(b=>{const cb=$('input',b);if(cb?.checked){const p=preset(b.dataset.onpreset);chosen.push({name:b.dataset.onpreset,icon:p?.icon||'✅',private:!!p?.private,difficulty:p?.difficulty||'Medium',action:p?.action||'Do the smallest useful version'})}});customSetup.forEach(n=>chosen.push({name:n,icon:'✅',private:false,difficulty:'Medium',action:'Do the smallest useful version'}));if(!chosen.length){alert('Select at least one habit.');return}data.name=name;if(!data.creatorName)data.creatorName=name;data.habits=chosen.slice(0,15).map(x=>Object.assign({id:uid(),created:today(),time:'',smallWin:x.action,why:''},x));data.onboardingDone=true;data.profileCreated=true;data.journeyStart=today();data.lastLogin=today();save();tab='today';morePanel='';selectedHabit=null;focusMode=false;quickOpen=false;render();showToast('Your V16 system is ready 🚀')}
 
 
 function habitOverlay(){
@@ -1273,7 +1273,7 @@ function settingsHtml(){const c=creatorName();return `<section class="card"><div
 function creditsHtml(){return `<div class="v13-credits-page"><div class="v13-section-head"><div><div class="kicker">CREDITS</div><h2>Built by the creator</h2></div><button class="btn small" data-close-more>Close</button></div>${creatorCard()}<div class="note" style="margin-top:10px">Your creator details are saved only on this device. Add your social link in Settings to turn this into a profile promo.</div></div>`;}
 function panelHtml(){return {goals:goalsHtml,routine:routineHtml,planner:plannerHtml,checkin:checkinHtml,sleep:sleepHtml,journal:journalHtml,reminders:remindersHtml,security:securityHtml,settings:settingsHtml,credits:creditsHtml}[morePanel]?.()||settingsHtml();}
 function morePage(){if(morePanel==='manage')return manageHabitsHtml();if(morePanel==='credits')return creditsHtml();return `<div class="v12-tool-page"><section class="card hero"><div class="kicker">MORE TOOLS</div><h2 style="margin:4px 0 6px">Everything else, when you need it.</h2><p class="muted" style="margin:0">Goals, routines, planner, check-in, sleep, journal, reminders, privacy, creator profile and data tools.</p></section><section class="drawer-grid"><button class="more-tile v133-share-tile" data-share-progress><span>↗</span><b>Share & invite</b><small>Make a progress card or invite friends.</small></button><button class="more-tile" data-more="manage"><span>✅</span><b>Manage habits</b><small>Add, edit or remove habits.</small></button><button class="more-tile" data-more="goals"><span>🎯</span><b>Goals & review</b><small>Link goals to habits and reflect.</small></button><button class="more-tile" data-more="routine"><span>🔁</span><b>Routines</b><small>Run habits step by step.</small></button><button class="more-tile" data-more="planner"><span>🗓️</span><b>Day planner</b><small>Set preferred times.</small></button><button class="more-tile" data-more="checkin"><span>🌤️</span><b>Mood & energy</b><small>Build a simple personal history.</small></button><button class="more-tile" data-more="sleep"><span>😴</span><b>Sleep</b><small>Log hours and timing.</small></button><button class="more-tile" data-more="journal"><span>✍️</span><b>Journal</b><small>Keep one-line reflections.</small></button><button class="more-tile" data-more="reminders"><span>⏰</span><b>Reminders</b><small>Time your next action.</small></button><button class="more-tile" data-more="security"><span>🔐</span><b>Privacy</b><small>Local PIN and session lock.</small></button><button class="more-tile" data-more="settings"><span>⚙️</span><b>Settings & data</b><small>Theme, backup, install, creator profile.</small></button><button class="more-tile" data-more="credits"><span>❤️</span><b>Credits</b><small>Promote the person who built it.</small></button></section>${v13CommunityCard()}</div>`;}
-function v12Drawer(){return `<div class="v12-drawer-backdrop" data-close-drawer></div><aside class="v12-drawer"><div class="v12-drawer-brand"><div class="kicker">WINTER ARC 2026</div><h2>Winter Arc Tracker</h2><p>1 Oct – 31 Dec 2026 · Your progress stays on this device.</p></div><section class="v13-drawer-community">${v13CommunityCard()}</section><button class="v12-drawer-item" data-tab="today">🏠 <span>Today</span></button><button class="v12-drawer-item" data-tab="week">📅 <span>Week</span></button><button class="v12-drawer-item" data-tab="month">🗓️ <span>Month</span></button><button class="v12-drawer-item" data-tab="arc">❄️ <span>Arc</span></button><div class="v12-drawer-line"></div><div class="v12-drawer-label">TOOLS</div><button class="v12-drawer-item" data-more="manage">✅ <span>Manage habits</span></button><button class="v12-drawer-item" data-more="goals">🎯 <span>Goals</span></button><button class="v12-drawer-item" data-more="routine">🔁 <span>Routines</span></button><button class="v12-drawer-item" data-more="planner">🗓️ <span>Day planner</span></button><button class="v12-drawer-item" data-more="checkin">🌤️ <span>Mood & energy</span></button><button class="v12-drawer-item" data-more="sleep">😴 <span>Sleep</span></button><button class="v12-drawer-item" data-more="journal">✍️ <span>Journal</span></button><button class="v12-drawer-item" data-more="reminders">⏰ <span>Reminders</span></button><button class="v12-drawer-item" data-more="security">🔐 <span>Privacy</span></button><button class="v12-drawer-item" data-more="credits">❤️ <span>Credits</span></button><button class="v12-drawer-item" data-more="settings">⚙️ <span>Settings & data</span></button><div class="v12-drawer-bottom"><span>Made for small wins.</span><b>❄️ V17.0</b></div></aside>`;}
+function v12Drawer(){return `<div class="v12-drawer-backdrop" data-close-drawer></div><aside class="v12-drawer"><div class="v12-drawer-brand"><div class="kicker">WINTER ARC 2026</div><h2>Winter Arc Tracker</h2><p>1 Oct – 31 Dec 2026 · Your progress stays on this device.</p></div><section class="v13-drawer-community">${v13CommunityCard()}</section><button class="v12-drawer-item" data-tab="today">🏠 <span>Today</span></button><button class="v12-drawer-item" data-tab="week">📅 <span>Week</span></button><button class="v12-drawer-item" data-tab="month">🗓️ <span>Month</span></button><button class="v12-drawer-item" data-tab="arc">❄️ <span>Arc</span></button><div class="v12-drawer-line"></div><div class="v12-drawer-label">TOOLS</div><button class="v12-drawer-item" data-more="manage">✅ <span>Manage habits</span></button><button class="v12-drawer-item" data-more="goals">🎯 <span>Goals</span></button><button class="v12-drawer-item" data-more="routine">🔁 <span>Routines</span></button><button class="v12-drawer-item" data-more="planner">🗓️ <span>Day planner</span></button><button class="v12-drawer-item" data-more="checkin">🌤️ <span>Mood & energy</span></button><button class="v12-drawer-item" data-more="sleep">😴 <span>Sleep</span></button><button class="v12-drawer-item" data-more="journal">✍️ <span>Journal</span></button><button class="v12-drawer-item" data-more="reminders">⏰ <span>Reminders</span></button><button class="v12-drawer-item" data-more="security">🔐 <span>Privacy</span></button><button class="v12-drawer-item" data-more="credits">❤️ <span>Credits</span></button><button class="v12-drawer-item" data-more="settings">⚙️ <span>Settings & data</span></button><div class="v12-drawer-bottom"><span>Made for small wins.</span><b>❄️ V16.0</b></div></aside>`;}
 function v12Shell(){const body=tab==='today'?v12TodayPage():tab==='week'?v12WeekPage():tab==='month'?v12MonthPage():tab==='more'?morePage():v12ArcPage(),st=stats(),arcLine=v13ArcStarted()?`Arc Day ${v13ArcDay()}`:'Arc starts tomorrow';return `<div class="v12-app">${v12Topbar()}<div class="v12-global-line"><span>${data.name?`Hi, ${escapeHtml(data.name)} 👋`:'Your progress'}</span><span>${st.todayDone}/${data.habits.length} today · ${arcLine}</span></div><main class="v12-main">${body}</main><button class="v12-fab" data-fab aria-label="Add">${quickOpen?'×':'+'}</button>${quickOpen?`<div class="v12-fab-menu"><button data-quick="habit">✅ Add habit</button><button data-quick="goals">🎯 Goal</button><button data-quick="routine">🔁 Routine</button></div>`:''}${selectedHabit?habitOverlay():''}${!data.onboardingDone&&!data.pinHash?onboarding():''}${window.__v11QuickModal?quickModal():''}${newHabitOpen?newHabitModal():''}</div>`;}
 document.addEventListener('click',e=>{
   const b=e.target.closest('button');
@@ -1579,7 +1579,7 @@ function v16GetAppPage(){
   const st=v16InstallState();
   return `<div class="v14-page v16-get-app">
     <section class="v16-app-hero">
-      <div class="v14-kicker">GET THE APP · V17.0</div>
+      <div class="v14-kicker">GET THE APP · V16.0</div>
       <div class="v16-app-top">
         <div>
           <h1>Winter Arc on your phone. 📱</h1>
@@ -1729,175 +1729,6 @@ if(compareFromHash())window.__v14Compare=true;
 /* Reuse existing shell helpers but return the V14 surface. */
 function v12Shell(){return v14Shell();}
 
-
-
-
-/* ========================= V17 UX PATCH =========================
-   A cleaner entry flow: Welcome → Profile → Goal → Habits → Ready.
-   Existing V16 data is migrated through OLD_KEYS into V17 storage.
-*/
-let v17Step = 0;
-let v17GoalChoice = '';
-if(data.onboardingDone && data.name && !data.profileCreated){data.profileCreated=true;save();}
-let v17Habits = [];
-let v17CustomHabit = '';
-
-function v17ResetWizard(){
-  v17Step=0;
-  v17GoalChoice=data.goal||'';
-  const existing=(data.habits||[]).map(h=>h.name);
-  v17Habits=existing.length?existing.slice(0,6):PRESETS.filter(p=>!p.private).slice(0,3).map(p=>p.name);
-  v17CustomHabit='';
-}
-function v17HasGoal(){return !!String(v17GoalChoice||'').trim()}
-function v17Selected(name){return v17Habits.some(x=>x.toLowerCase()===name.toLowerCase())}
-function v17ToggleHabit(name){
-  if(v17Selected(name))v17Habits=v17Habits.filter(x=>x.toLowerCase()!==name.toLowerCase());
-  else if(v17Habits.length<6)v17Habits.push(name);
-  else showToast('Pick up to 6 habits.');
-}
-function v17HabitAction(name){
-  const p=preset(name);
-  return p?.action || 'Do the smallest useful version';
-}
-function v17GoalLabel(g){
-  return ({discipline:'Build discipline',study:'Study / work',fitness:'Get fitter',mind:'Improve my mind',custom:'My own goal'})[g]||g||'My goal';
-}
-function v17Styles(){
-  if(document.getElementById('v17-style'))return;
-  const style=document.createElement('style');
-  style.id='v17-style';
-  style.textContent=`
-    .v17-screen{min-height:100dvh;display:grid;place-items:center;padding:22px 14px;background:radial-gradient(circle at 50% -10%,rgba(61,163,93,.13),transparent 38%),var(--bg,#f5f3ed);color:var(--ink,#202522)}
-    .v17-card{width:min(100%,520px);background:var(--card,#fff);border:1px solid var(--line,#e7e7e1);border-radius:28px;padding:26px;box-shadow:0 18px 60px rgba(20,30,24,.10)}
-    .v17-welcome-card{text-align:center;padding:34px 25px}.v17-logo{width:68px;height:68px;margin:0 auto 14px;border-radius:22px;display:grid;place-items:center;background:#3da35d;color:white;font-size:32px;box-shadow:0 12px 30px rgba(61,163,93,.25)}
-    .v17-kicker{font-size:11px;letter-spacing:.15em;font-weight:850;color:#3a7f50}.v17-card h1{font-size:32px;line-height:1.05;margin:9px 0 9px;letter-spacing:-.03em}.v17-sub{font-size:15px;line-height:1.55;color:var(--muted,#70766f);margin:0 0 20px}
-    .v17-feature-row{display:grid;gap:8px;margin:20px 0;text-align:left}.v17-feature-row span{padding:11px 13px;border:1px solid var(--line,#e7e7e1);border-radius:14px;background:#fafbf9;font-size:13px;font-weight:700}
-    .v17-primary,.v17-secondary,.v17-add{width:100%;min-height:52px;border-radius:15px;padding:13px 16px;font:inherit;font-weight:850;cursor:pointer;border:1px solid var(--line,#e7e7e1);transition:transform .12s ease,opacity .12s ease,background .12s ease}.v17-primary{background:#3da35d;color:#fff;border-color:#3da35d;box-shadow:0 10px 24px rgba(61,163,93,.20)}.v17-secondary{background:transparent;color:var(--ink,#202522);margin-top:9px}.v17-primary:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}.v17-primary:not(:disabled):active,.v17-secondary:active,.v17-add:active{transform:scale(.98)}
-    .v17-footnote,.v17-hint{font-size:11px;line-height:1.45;color:var(--muted,#70766f);margin-top:14px}.v17-hint{padding:11px 12px;background:#f7f8f5;border-radius:13px;text-align:left}.v17-invite{margin-top:14px;font-size:12px;padding:10px;border-radius:13px;background:#eef7ef;color:#287644}
-    .v17-stephead{display:flex;align-items:center;justify-content:space-between;color:var(--muted,#70766f);font-size:12px;font-weight:800;margin-bottom:10px}.v17-back{border:0;background:transparent;font:inherit;font-size:22px;cursor:pointer;padding:2px 6px}.v17-progress{height:7px;background:#edf0eb;border-radius:99px;overflow:hidden;margin-bottom:25px}.v17-progress i{display:block;height:100%;background:#3da35d;border-radius:99px}
-    .v17-input{width:100%;min-height:52px;border:1px solid var(--line,#ddd);border-radius:15px;padding:13px 14px;background:var(--card,#fff);color:inherit;font:inherit;outline:none}.v17-input:focus{border-color:#3da35d;box-shadow:0 0 0 3px rgba(61,163,93,.12)}
-    .v17-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:17px 0}.v17-choice{position:relative;display:flex;align-items:center;gap:10px;min-height:72px;padding:12px;border:1px solid var(--line,#e7e7e1);border-radius:16px;background:#fff;color:inherit;text-align:left;cursor:pointer;font:inherit}.v17-choice span{font-size:22px}.v17-choice em{position:absolute;right:10px;top:9px;font-style:normal;color:#3da35d;font-weight:900}.v17-choice.selected{border-color:#3da35d;background:#f1f8f2;box-shadow:0 0 0 2px rgba(61,163,93,.08)}
-    .v17-choice-list{display:grid;gap:9px;margin:17px 0}.v17-habit-choice{display:flex;align-items:center;gap:12px;width:100%;padding:12px;border:1px solid var(--line,#e7e7e1);border-radius:16px;background:#fff;color:inherit;text-align:left;cursor:pointer;font:inherit}.v17-habit-choice.selected{border-color:#3da35d;background:#f1f8f2}.v17-choice-icon{width:39px;height:39px;display:grid;place-items:center;border-radius:12px;background:#f4f6f2;font-size:20px;flex:none}.v17-habit-choice span:nth-child(2){flex:1;min-width:0}.v17-habit-choice small{display:block;color:var(--muted,#70766f);font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v17-habit-choice strong{font-size:21px;color:#3da35d}.v17-custom-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin:14px 0 7px}.v17-add{width:auto;min-width:88px;background:#f6f7f4}.v17-chip{display:inline-flex;align-items:center;gap:5px;margin:4px 4px 10px 0;padding:7px 9px;border-radius:999px;background:#eef7ef;color:#287644;font-size:12px;font-weight:750}.v17-chip button{border:0;background:transparent;color:inherit;font-size:16px;cursor:pointer;padding:0 2px}
-    .v17-ready{text-align:center}.v17-success{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;margin:0 auto 13px;background:#3da35d;color:#fff;font-size:32px;font-weight:900}.v17-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0}.v17-summary>div{padding:13px 8px;border-radius:15px;background:#f7f8f5}.v17-summary b{display:block;font-size:23px}.v17-summary span{font-size:11px;color:var(--muted,#70766f)}.v17-first-win{display:flex;gap:12px;align-items:flex-start;text-align:left;padding:15px;border:1px solid #dfe8df;background:#f7faf7;border-radius:17px;margin-bottom:15px}.v17-first-win>span{font-size:23px}.v17-first-win small{display:block;color:#3a7f50;font-size:10px;font-weight:900;letter-spacing:.12em}.v17-first-win b{display:block;margin-top:2px;font-size:16px}.v17-first-win p{margin:3px 0 0;font-size:12px;color:var(--muted,#70766f)}
-    .v17-login-card{text-align:center}.v17-avatar{width:74px;height:74px;margin:18px auto 8px;border-radius:50%;display:grid;place-items:center;background:#eef7ef;color:#287644;font-size:29px;font-weight:900}.v17-login-name{font-weight:850;font-size:15px;margin-bottom:15px}.v17-pin{text-align:center;letter-spacing:.35em;font-size:20px}.v17-login-card .v17-hint{text-align:center}
-    @media(max-width:480px){.v17-card{padding:22px 17px;border-radius:24px}.v17-card h1{font-size:29px}.v17-choice-grid{grid-template-columns:1fr}.v17-feature-row{margin-top:16px}.v17-screen{padding:12px}.v17-summary{gap:6px}}
-    body.dark .v17-screen{background:#101411}body.dark .v17-card{background:#151a16;border-color:#293129;box-shadow:0 18px 60px rgba(0,0,0,.30)}body.dark .v17-feature-row span,body.dark .v17-choice,body.dark .v17-habit-choice{background:#151a16;border-color:#293129}body.dark .v17-choice.selected,body.dark .v17-habit-choice.selected{background:#18261c}body.dark .v17-input{background:#111612;border-color:#293129}body.dark .v17-hint,body.dark .v17-summary>div,body.dark .v17-first-win{background:#121814;border-color:#293129}
-  `;
-  document.head.appendChild(style);
-}
-
-function v17Welcome(){
-  const invite=data.invitedBy?`<div class="v17-invite">🤝 Invited by <b>@${escapeHtml(data.invitedBy)}</b></div>`:'';
-  return `<div class="v17-screen"><div class="v17-card v17-welcome-card"><div class="v17-logo">❄️</div><div class="v17-kicker">WINTER ARC · 2026</div><h1>Build your next 92 days.</h1><p class="v17-sub">One simple system for habits, progress and your next small win.</p><div class="v17-feature-row"><span>✅ Daily actions</span><span>📈 Real progress</span><span>🔒 Local first</span></div><button class="v17-primary" data-v17-next>Start my Arc <span>→</span></button><button class="v17-secondary" data-v17-existing>Already started? Continue <span>→</span></button>${invite}<div class="v17-footnote">No complicated setup. You can change everything later.</div></div></div>`;
-}
-function v17Profile(){
-  return `<div class="v17-screen"><div class="v17-card"><div class="v17-stephead"><button class="v17-back" data-v17-back>←</button><span>1 of 3</span></div><div class="v17-progress"><i style="width:33%"></i></div><div class="v17-kicker">YOUR PROFILE</div><h1>What should we call you?</h1><p class="v17-sub">Just your first name is enough.</p><input id="v17Name" class="v17-input" autocomplete="name" placeholder="Your name" value="${escapeHtml(data.name||'')}"><div class="v17-hint">🔒 Your profile stays on this device unless you choose community sync later.</div><button class="v17-primary" data-v17-next>Continue <span>→</span></button></div></div>`;
-}
-function v17Goal(){
-  const choices=[['discipline','🎯','Build discipline'],['study','📚','Study / work'],['fitness','💪','Get fitter'],['mind','🧠','Improve my mind'],['custom','✨','My own goal']];
-  return `<div class="v17-screen"><div class="v17-card"><div class="v17-stephead"><button class="v17-back" data-v17-back>←</button><span>2 of 3</span></div><div class="v17-progress"><i style="width:66%"></i></div><div class="v17-kicker">YOUR DIRECTION</div><h1>What do you want this Arc to improve?</h1><p class="v17-sub">Pick one. You can add more later.</p><div class="v17-choice-grid">${choices.map(([id,icon,label])=>`<button class="v17-choice ${v17GoalChoice===id?'selected':''}" data-v17-goal="${id}"><span>${icon}</span><b>${label}</b>${v17Goal===id?'<em>✓</em>':''}</button>`).join('')}</div>${v17GoalChoice==='custom' ? `<input id="v17CustomGoal" class="v17-input" placeholder="e.g. Become more consistent" value="${v17GoalChoice==='custom'?escapeHtml(data.goal||''):''}">`:''}<button class="v17-primary" data-v17-next ${!v17HasGoal()?'disabled':''}>Continue <span>→</span></button></div></div>`;
-}
-function v17HabitsStep(){
-  const picks=PRESETS.filter(p=>!p.private).slice(0,6);
-  return `<div class="v17-screen"><div class="v17-card"><div class="v17-stephead"><button class="v17-back" data-v17-back>←</button><span>3 of 3</span></div><div class="v17-progress"><i style="width:100%"></i></div><div class="v17-kicker">FIRST WINS</div><h1>Choose a few habits to start.</h1><p class="v17-sub">Keep it light. <b>${v17Habits.length}/6</b> selected.</p><div class="v17-choice-list">${picks.map(p=>`<button class="v17-habit-choice ${v17Selected(p.name)?'selected':''}" data-v17-habit="${escapeHtml(p.name)}"><span class="v17-choice-icon">${p.icon}</span><span><b>${escapeHtml(p.name)}</b><small>${escapeHtml(p.action)}</small></span><strong>${v17Selected(p.name)?'✓':'+'}</strong></button>`).join('')}</div><div class="v17-custom-row"><input id="v17CustomHabit" class="v17-input" placeholder="Add your own habit" value="${escapeHtml(v17CustomHabit)}"><button class="v17-add" data-v17-add-habit>＋ Add</button></div>${v17Habits.filter(n=>!picks.some(p=>p.name.toLowerCase()===n.toLowerCase())).map(n=>`<span class="v17-chip">${escapeHtml(n)} <button data-v17-remove-habit="${escapeHtml(n)}">×</button></span>`).join('')}<button class="v17-primary" data-v17-finish ${!v17Habits.length?'disabled':''}>Create my Arc <span>🚀</span></button><div class="v17-footnote">You can edit, remove or add habits anytime.</div></div></div>`;
-}
-function v17Ready(){
-  const n=data.habits.length;
-  return `<div class="v17-screen"><div class="v17-card v17-ready"><div class="v17-success">✓</div><div class="v17-kicker">YOUR ARC IS READY</div><h1>Nice, ${escapeHtml(data.name||'there')}.</h1><p class="v17-sub">Your system is set up. Your first job is simple: get one small win today.</p><div class="v17-summary"><div><b>92</b><span>days</span></div><div><b>${n}</b><span>habits</span></div><div><b>1</b><span>goal</span></div></div><div class="v17-first-win"><span>🎯</span><div><small>FIRST WIN</small><b>${escapeHtml(data.habits[0]?.name||'Start your first habit')}</b><p>${escapeHtml(data.habits[0]?.action||'Do the smallest useful version')}</p></div></div><button class="v17-primary" data-v17-enter>Start Day 1 <span>→</span></button><button class="v17-secondary" data-v17-community>Join the community <span>🤝</span></button><div class="v17-footnote">Community is optional. Your private tracker still works without it.</div></div></div>`;
-}
-function v17Entry(){
-  if(v17Step===0)return v17Welcome();
-  if(v17Step===1)return v17Profile();
-  if(v17Step===2)return v17Goal();
-  if(v17Step===3)return v17HabitsStep();
-  return v17Ready();
-}
-function v17Locked(){
-  return `<div class="v17-screen"><div class="v17-card v17-login-card"><div class="v17-logo">❄️</div><div class="v17-kicker">WELCOME BACK</div><h1>Continue your Arc.</h1><p class="v17-sub">Your progress is ready on this device.</p><div class="v17-avatar">${escapeHtml((data.name||'A').slice(0,1).toUpperCase())}</div><div class="v17-login-name">${escapeHtml(data.name||'Your profile')}</div><input id="loginPin" class="v17-input v17-pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="4–6 digit PIN"><button class="v17-primary" data-login>Unlock <span>🔓</span></button><button class="v17-secondary" data-forgot-pin>Reset this profile</button><div class="v17-hint">🔒 This is a local device profile, not an online password.</div></div></div>`;
-}
-function v17MainShell(){
-  const base=v14Shell();
-  return base;
-}
-
-function v17ApplyWizardProfile(){
-  const name=$('#v17Name')?.value.trim()||data.name||'';
-  if(!name){alert('Please enter your name.');return false;}
-  data.name=name;
-  return true;
-}
-function v17Advance(){
-  if(v17Step===0){v17Step=1;render();return}
-  if(v17Step===1){if(!v17ApplyWizardProfile())return;v17Step=2;render();return}
-  if(v17Step===2){
-    if(v17GoalChoice==='custom'){const c=$('#v17CustomGoal')?.value.trim()||'';if(!c){alert('Enter your goal.');return}v17Goal=c;}
-    data.goal=v17GoalChoice;v17Step=3;render();return;
-  }
-}
-function v17Finish(){
-  if(!v17Habits.length){alert('Choose at least one habit.');return}
-  const selected=v17Habits.slice(0,6).map(name=>{
-    const p=preset(name);
-    return {name,icon:p?.icon||'✅',private:!!p?.private,difficulty:p?.difficulty||'Medium',action:p?.action||'Do the smallest useful version'};
-  });
-  data.habits=selected.map(x=>Object.assign({id:uid(),created:today(),time:'',smallWin:x.action,why:''},x));
-  data.onboardingDone=true;
-  data.profileCreated=true;
-  data.journeyStart=today();
-  data.lastLogin=today();
-  data.goalLinks=[];
-  save();
-  v17Step=4;
-  render();
-}
-
-/* V17 overrides the entry renderer only; the existing tracker shell remains intact after setup. */
-const v17OriginalRender=render;
-render=function(){
-  v17Styles();
-  document.body.classList.toggle('dark',!!data.dark);
-  if(isLocked()){
-    document.body.innerHTML=v17Locked();
-  }else if(!data.profileCreated || !data.onboardingDone){
-    document.body.innerHTML=v17Entry();
-  }else{
-    document.body.innerHTML=v17MainShell();
-  }
-  bindDomState();
-};
-
-/* V17 action handlers run first so they never compete with older onboarding handlers. */
-document.addEventListener('click',async e=>{
-  const b=e.target.closest('button');
-  if(!b)return;
-  if(b.dataset.v17Existing!==undefined){e.preventDefault();e.stopImmediatePropagation();
-    if(data.profileCreated||data.pinHash){sessionUnlocked=data.pinHash?false:true;v17Step=0;render();}
-    else{showToast('Create your Arc first 🚀');}
-    return;
-  }
-  if(b.dataset.v17Next!==undefined){e.preventDefault();e.stopImmediatePropagation();v17Advance();return;}
-  if(b.dataset.v17Back!==undefined){e.preventDefault();e.stopImmediatePropagation();v17Step=Math.max(0,v17Step-1);render();return;}
-  if(b.dataset.v17Goal!==undefined){e.preventDefault();e.stopImmediatePropagation();v17GoalChoice=b.dataset.v17Goal;render();return;}
-  if(b.dataset.v17Habit!==undefined){e.preventDefault();e.stopImmediatePropagation();v17ToggleHabit(b.dataset.v17Habit);render();return;}
-  if(b.dataset.v17AddHabit!==undefined){e.preventDefault();e.stopImmediatePropagation();const v=$('#v17CustomHabit')?.value.trim()||'';if(!v){return}v17CustomHabit=v;if(!v17Selected(v))v17ToggleHabit(v);v17CustomHabit='';render();return;}
-  if(b.dataset.v17RemoveHabit!==undefined){e.preventDefault();e.stopImmediatePropagation();v17Habits=v17Habits.filter(x=>x!==b.dataset.v17RemoveHabit);render();return;}
-  if(b.dataset.v17Finish!==undefined){e.preventDefault();e.stopImmediatePropagation();v17Finish();return;}
-  if(b.dataset.v17Enter!==undefined){e.preventDefault();e.stopImmediatePropagation();tab='today';morePanel='';selectedHabit=null;focusMode=false;quickOpen=false;render();showToast('Your Arc is live 🚀');return;}
-  if(b.dataset.v17Community!==undefined){e.preventDefault();e.stopImmediatePropagation();window.__v14Cloud=true;render();return;}
-},{capture:true});
-
-document.addEventListener('keydown',e=>{
-  if(e.key!=='Enter')return;
-  if(document.activeElement?.id==='v17Name' || document.activeElement?.id==='v17CustomGoal'){
-    const btn=document.querySelector('[data-v17-next]'); if(btn&&!btn.disabled){e.preventDefault();btn.click();}
-  }
-  if(document.activeElement?.id==='loginPin'){const btn=document.querySelector('[data-login]');if(btn){e.preventDefault();btn.click();}}
-});
-
-/* Keep migrated data explicitly tagged as V17. */
-data.schema=17;
-if(data.profileCreated||data.onboardingDone)save();
 
 communityCheckin();
 render();
