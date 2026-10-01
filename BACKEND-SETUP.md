@@ -1,49 +1,22 @@
-# Winter Arc V18.1 backend setup
+# Winter Arc Tracker V24.1 Stable — Supabase setup
 
-The app is offline-first. Cloud/community sync is **opt-in** and disabled by default.
+V24.1 Stable keeps the V21 Supabase shape and adds exact-rank + active-member RPCs for the public Arc League.
 
-## 1. Create Supabase
-Create a Supabase project and copy the Project URL + public anon key.
+## 1. Create the tables
+Open `backend-schema.sql` in Supabase SQL Editor and run it.
 
-## 2. Run SQL
-Open SQL Editor and run `backend-schema.sql`.
-Before running it, replace `YOUR_CREATOR_EMAIL` with the email you will use for the creator dashboard.
-
-## 3. Configure the app
+## 2. Configure the web app
 Open `cloud-config.js` and set:
+- `url`: your Supabase project URL
+- `anonKey`: your Supabase anon key
 
-```js
-window.WINTER_ARC_CLOUD = {
-  url: 'https://YOUR-PROJECT.supabase.co',
-  anonKey: 'YOUR_PUBLIC_ANON_KEY'
-};
-```
+Do not put a service-role key in the website.
 
-Use only the **anon/public** key in the app. Never put a service-role key in GitHub Pages.
+## 3. Top 20 requirements
+The leaderboard uses `get_public_leaderboard()` for a maximum of 20 public rows. `get_public_rank()` returns a user's exact global rank, including ranks outside Top 20. `get_active_public_members()` returns active public names with their exact rank. The app has a REST fallback when the RPCs are not installed, but the V24.1 SQL is recommended for exact results at scale.
 
-## 4. Creator dashboard
-Open `creator-dashboard.html`, set `SUPABASE_URL` and `SUPABASE_ANON_KEY`, upload it to GitHub Pages, and sign in with the creator account.
+## 4. Local-first privacy
+Community sync is optional. Private habit names, journal, sleep, mood and local PIN are not included in the public leaderboard request.
 
-The SQL RPC checks the creator email before returning the user list.
-
-## 5. What is synced
-Only when a user explicitly enables Community Sync:
-- display name
-- Instagram handle (if present)
-- Arc day / total days
-- Arc progress
-- today's completed count
-- habit count
-- total wins
-- best streak
-- last seen
-- public-profile preference
-
-Private habit names, journal, sleep, mood, PIN and full local history are not uploaded by this V16.0 sync flow.
-
-## 6. Important production note
-The current prototype uses a random device UUID for opt-in writes. For a public production launch, move write operations behind a Supabase Edge Function or authenticated anonymous/user sessions and add rate limiting. The creator dashboard itself should never use a service-role key in browser code.
-
-
-## V16 website-first structure
-The main product is the GitHub Pages website. The user-facing app stays fully usable without the creator dashboard. The dashboard is a separate creator-only page and does not replace or remove the tracker features.
+## 5. Creator dashboard
+`creator-dashboard.html` uses the same Supabase project. Keep the creator email placeholder in the SQL/RPC configured before using that dashboard in a real deployment.
