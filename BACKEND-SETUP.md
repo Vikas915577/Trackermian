@@ -1,22 +1,10 @@
-# Winter Arc Tracker V24.1 Stable — Supabase setup
+# Winter Arc Tracker V25 Backend Setup
 
-V24.1 Stable keeps the V21 Supabase shape and adds exact-rank + active-member RPCs for the public Arc League.
+1. Create a Supabase project.
+2. Enable Anonymous Sign-Ins for Community Sync.
+3. Run `backend-schema.sql` in the Supabase SQL Editor.
+4. Put only the public project URL + publishable/anon key in `assets/webcore/cloud-config.js`.
+5. Replace `YOUR_CREATOR_EMAIL` in the creator-dashboard RPC before production use.
+6. Never ship a service-role key in the app.
 
-## 1. Create the tables
-Open `backend-schema.sql` in Supabase SQL Editor and run it.
-
-## 2. Configure the web app
-Open `cloud-config.js` and set:
-- `url`: your Supabase project URL
-- `anonKey`: your Supabase anon key
-
-Do not put a service-role key in the website.
-
-## 3. Top 20 requirements
-The leaderboard uses `get_public_leaderboard()` for a maximum of 20 public rows. `get_public_rank()` returns a user's exact global rank, including ranks outside Top 20. `get_active_public_members()` returns active public names with their exact rank. The app has a REST fallback when the RPCs are not installed, but the V24.1 SQL is recommended for exact results at scale.
-
-## 4. Local-first privacy
-Community sync is optional. Private habit names, journal, sleep, mood and local PIN are not included in the public leaderboard request.
-
-## 5. Creator dashboard
-`creator-dashboard.html` uses the same Supabase project. Keep the creator email placeholder in the SQL/RPC configured before using that dashboard in a real deployment.
+Public Rank only exposes intended aggregate data through RPCs. Owner writes use `auth.uid()`.

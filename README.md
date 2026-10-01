@@ -1,32 +1,50 @@
-# Winter Arc V24.2 — Senior QA Fix Pack
+# Winter Arc Tracker V25.1 — UI/UX + Stability / No-NPM
 
-This pack is based on the current `V24.1` GitHub source that was audited.
+This package is the **stability and UI improvement pass** requested for Winter Arc.
 
-## What is fixed
+## What is actually inside
 
-- Exact Top 20 is driven through the Supabase RPCs already present in the backend schema.
-- Adds the missing client-side `rankFetch()` RPC helper.
-- Loads exact personal rank, active named users, and community counts.
-- Active users show their exact global rank, including a user outside Top 20.
-- Search keeps the original Top-20 rank numbers.
-- Adds `Community users`, `Public profiles`, `Active now`, and `Active 24h` counters.
-- Moves the creator credit to the top of Today and shows the 3 creator photos as a clean card.
-- Shows the creator card on the new-user/local-profile screen too.
-- Restores direct Rank and Profile bottom navigation; Month and Arc remain available from More.
-- Bumps the app version to V24.2.
+**Flutter/Dart shell** → mobile/desktop packaging, native back button, better WebView/media behavior, no Node/npm requirement.
 
-## Central user data
+**Bundled V24.1 feature-preserving web core** → the existing tracker feature set is kept instead of rewriting a smaller app and accidentally removing mature functionality.
 
-The app only knows named users centrally when Community Sync is enabled and the Supabase backend is configured. `cloud-config.js` in the current repo is blank, so the deployed repo currently has no configured Supabase URL/anon key.
+**Supabase backend SQL** → owner-based RLS, public Rank RPCs, Community Sync and creator dashboard support.
 
-GitHub Pages/repository traffic is separate from app users. It can show visitor/clone traffic, but it does not provide the app's display names. GitHub documents repository traffic separately from application-level user data.
+**GitHub Actions** → builds the Android test APK without requiring npm on the phone.
 
-## Apply
+The app deliberately does **not** add unrelated new product features.
 
-1. Put the repository files in a local folder.
-2. Run `python3 app-v24.2-patch.py` from the repo root.
-3. Run `community-stats.sql` in Supabase SQL Editor.
-4. Configure `cloud-config.js` with the Supabase URL + public anon key (never a service-role key).
-5. Make sure Supabase Anonymous Sign-Ins are enabled.
+## Feature preservation
 
-The Python patch keeps a backup as `app.js.v24.1-backup` before replacing `app.js`.
+The bundled core keeps Today, Week, Month, Arc, Profile, More, habits, habit history, streaks, XP, freeze, routines, goals, day planner, mood/energy, journal, sleep, reminders, Rank, Community Sync, public profile, Share & Invite, friend compare, Creator/Credits, Backup/Restore and PWA/web behavior.
+
+The previous V20/V21 sources are retained as migration references in the conversation and the current V24.1 core is bundled as the runtime source, so this package is not a cut-down rewrite.
+
+## Important data migration fact
+
+Chrome/PWA localStorage is sandboxed separately from a newly installed native app. A new Android/iOS app cannot safely copy another app/browser's private localStorage without explicit access. Therefore the safe migration path is:
+
+**Old tracker → Export JSON backup → Install V25 → Restore backup.**
+
+The bundled web core already contains its legacy V17/V18/V19/V20 migration logic for backups and preserves the existing data model.
+
+## Phone-only workflow
+
+1. Upload the contents of this ZIP to the GitHub repository root.
+2. GitHub Actions runs Flutter's toolchain and produces a test APK artifact.
+3. Download/install the APK from the Actions artifact.
+4. The same repo can publish `assets/webcore/` to GitHub Pages for the web/PWA version.
+
+There is no `package.json`, no npm script and no Node build step.
+
+## Backend
+
+Run `backend/backend-schema.sql` in Supabase. Enable Anonymous Sign-Ins for Community Sync. Then configure `assets/webcore/cloud-config.js` with the public project URL and publishable/anon key. Never commit a service-role key.
+
+## Security
+
+Owner writes require `auth.uid() = id`. Public Rank is exposed through aggregate RPCs and player-facing Rank does not display Instagram handles.
+
+## QA status
+
+Static checks and JavaScript syntax checks are included. This environment does not have the Flutter SDK installed, so the final Flutter APK compile must be verified by the included GitHub Actions workflow.

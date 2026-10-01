@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 
-const VERSION='V24.1-STABLE';
+const VERSION='V25.1';
 const WINTER_ARC_START='2026-10-01';
 const WINTER_ARC_END='2026-12-31';
 const WINTER_ARC_LENGTH=92;
@@ -411,7 +411,7 @@ function plannerHtml(){const ordered=data.habits.slice().sort((a,b)=>String(a.ti
 function checkinHtml(){const d=today(),m=Number(data.mood[d]||0),e=Number(data.energy[d]||0);return `<section class="card"><div class="section"><h2>🌤️ Mood & energy</h2><button class="btn small" data-close-more>Close</button></div><p class="muted smalltext">Optional. Use this to understand which days feel easier or harder.</p><div class="smalltext muted" style="margin:9px 0 7px">Mood · ${moodText(m)}</div><div class="mood-row">${[1,2,3,4,5].map(v=>`<button class="mood-btn ${m===v?'selected':''}" data-mood="${v}">${['😣','😴','😐','🙂','😊'][v-1]}</button>`).join('')}</div><div class="smalltext muted" style="margin:11px 0 7px">Energy · ${energyText(e)}</div><div class="mood-row">${[1,2,3,4,5].map(v=>`<button class="mood-btn ${e===v?'selected':''}" data-energy="${v}">${['🪫','🔋','⚡','⚡','🚀'][v-1]}</button>`).join('')}</div></section>`}
 function sleepHtml(){const d=today(),o=data.sleep[d]||{};return `<section class="card"><div class="section"><h2>😴 Sleep</h2><button class="btn small" data-close-more>Close</button></div><div class="form"><div class="field"><label>Hours</label><input id="sleepHours" type="number" min="0" max="24" step="0.1" value="${escapeHtml(o.hours||'')}"></div><div class="field"><label>Bedtime</label><input id="bed" type="time" value="${escapeHtml(o.bed||'')}"></div><div class="field"><label>Wake time</label><input id="wake" type="time" value="${escapeHtml(o.wake||'')}"></div></div><button class="btn primary" data-save-sleep style="margin-top:10px">Save sleep 😴</button></section>`}
 function journalHtml(){const d=today();const history=Object.keys(data.notes).filter(Boolean).sort().reverse().slice(0,7);return `<section class="card"><div class="section"><h2>✍️ Daily journal</h2><button class="btn small" data-close-more>Close</button></div><textarea id="dailyNote" placeholder="How was today?">${escapeHtml(data.notes[d]||'')}</textarea><button class="btn primary" data-save-note style="margin-top:10px">Save today’s note</button></section><section class="card"><div class="section"><h2>📚 Recent notes</h2><span class="muted smalltext">Last 7 saved</span></div>${history.map(k=>`<div class="note" style="margin-top:7px"><b>${formatLong(k)}</b><div style="margin-top:3px">${escapeHtml(data.notes[k])}</div></div>`).join('')||'<div class="empty">No journal notes yet.</div>'}</section>`}
-function remindersHtml(){return `<section class="card"><div class="section"><h2>⏰ Reminders</h2><button class="btn small" data-close-more>Close</button></div><div class="notice">Reminders run while this page is open. Browser notifications require permission.</div><button class="btn" data-notify style="margin-top:9px">🔔 Allow notifications</button>${data.habits.map(h=>{const r=data.reminders[h.id]||{};return `<div class="plan-item"><div class="plan-time"><input type="time" data-remtime="${h.id}" value="${escapeHtml(r.time||h.time||'')}"></div><div class="plan-copy"><b>${escapeHtml(h.icon)} ${escapeHtml(h.name)}</b><div class="muted smalltext">${r.enabled?'Reminder on':'Reminder off'}</div></div><input type="checkbox" data-remon="${h.id}" ${r.enabled?'checked':''}></div>`}).join('')||'<div class="empty" style="margin-top:8px">Add a habit first.</div>'}<button class="btn primary" data-save-reminders style="margin-top:10px">Save reminders ⏰</button></section>`}
+function remindersHtml(){return `<section class="card"><div class="section"><h2>⏰ Reminders</h2><button class="btn small" data-close-more>Close</button></div><div class="notice"><b>How reminders work:</b> notifications require browser permission and this tracker page/app to be running. They are not guaranteed background-native alarms.</div><button class="btn" data-notify style="margin-top:9px">🔔 Allow notifications</button>${data.habits.map(h=>{const r=data.reminders[h.id]||{};const t=r.time||h.time||'';return `<div class="plan-item"><div class="plan-time"><input type="time" data-remtime="${h.id}" value="${escapeHtml(t)}"></div><div class="plan-copy"><b>${escapeHtml(h.icon)} ${escapeHtml(h.name)}</b><div class="muted smalltext">${r.enabled&&t?'Reminder on':'Off · choose a time'}</div></div><input type="checkbox" data-remon="${h.id}" ${r.enabled&&t?'checked':''} ${t?'':'disabled'} aria-label="Enable reminder for ${escapeHtml(h.name)}"></div>`}).join('')||'<div class="empty" style="margin-top:8px">Add a habit first.</div>'}<button class="btn primary" data-save-reminders style="margin-top:10px">Save reminders ⏰</button></section>`}
 function securityHtml(){return `<section class="card"><div class="section"><h2>🔐 Profile & local security</h2><button class="btn small" data-close-more>Close</button></div><div class="note">Profile: <b>${escapeHtml(data.name||'Not set')}</b><br>Last login: ${escapeHtml(data.lastLogin||'This session')}</div><div class="form" style="margin-top:10px"><div class="field"><label>New PIN</label><input id="newPin" type="password" inputmode="numeric" maxlength="6" placeholder="4–6 digits"></div><div class="field"><label>Confirm PIN</label><input id="confirmPin" type="password" inputmode="numeric" maxlength="6" placeholder="Repeat PIN"></div><div class="field"><label>Name</label><input id="profileName2" value="${escapeHtml(data.name||'')}"></div></div><div class="quick-actions"><button class="btn primary" data-save-pin>Save PIN 🔒</button>${data.pinHash?'<button class="btn" data-remove-pin>Remove PIN</button>':''}<button class="btn" data-lock-now>Lock now</button></div><div class="security-note" style="margin-top:10px">The PIN is stored as a local hash. Device storage and exported backups are not encrypted.</div></section>`}
 function settingsHtml(){return `<section class="card"><div class="section"><h2>⚙️ Settings</h2><button class="btn small" data-close-more>Close</button></div><div class="quick-actions"><button class="btn" data-dark>${data.dark?'☀️ Light mode':'🌙 Dark mode'}</button><button class="btn" data-backup>💾 JSON backup</button><button class="btn" data-csv>📊 CSV</button><button class="btn" data-restore>📥 Restore</button><button class="btn" data-install>📱 Install app</button><input id="restoreFile" type="file" accept=".json" hidden></div><div class="note" style="margin-top:10px">Offline-first core tracking is stored on this device. Back up before clearing browser storage or changing devices.</div><div class="danger-note" style="margin-top:10px">Reset profile permanently erases this device’s local progress.</div><button class="btn" data-reset style="margin-top:9px">Reset local profile</button></section>`}
 function morePage(){return `<section class="card hero"><div class="kicker">MORE TOOLS</div><h2 style="margin:4px 0 6px">Build your system around real life.</h2><p class="muted" style="margin:0">Goals, routines, planner, check-in, sleep, journal, reminders, security and data tools.</p></section><section class="drawer-grid"><button class="more-tile" data-more="goals"><span>🎯</span><b>Goals & review</b><small>Link goals to habits and reflect.</small></button><button class="more-tile" data-more="routine"><span>🔁</span><b>Routines</b><small>Run habits step by step.</small></button><button class="more-tile" data-more="planner"><span>🗓️</span><b>Day planner</b><small>Set preferred times.</small></button><button class="more-tile" data-more="checkin"><span>🌤️</span><b>Mood & energy</b><small>Build a simple personal history.</small></button><button class="more-tile" data-more="sleep"><span>😴</span><b>Sleep</b><small>Log hours and timing.</small></button><button class="more-tile" data-more="journal"><span>✍️</span><b>Journal</b><small>Keep one-line reflections.</small></button><button class="more-tile" data-more="reminders"><span>⏰</span><b>Reminders</b><small>Time your next action.</small></button><button class="more-tile" data-more="security"><span>🔐</span><b>Profile & security</b><small>Local PIN and session lock.</small></button><button class="more-tile" data-more="settings"><span>⚙️</span><b>Settings & backup</b><small>Theme, export, restore, install.</small></button></section>${morePanel?panelHtml():'<section class="card"><div class="section"><h2>💾 Backup tip</h2><span class="badge">Recommended</span></div><div class="note">Take a JSON backup after major changes. Restore now correctly re-locks a PIN-protected profile.</div></section>'}`}
@@ -1546,14 +1546,6 @@ function v14CompareModal(){const their=compareFromHash()||decodeCompare(data.com
 function openCompare(){window.__v14ShareCenter=false;window.__v14Compare=true;render()}
 function v14CloudModal(){return `<div class="v14-share-overlay" data-close-cloud><div class="v14-share-modal">${cloudSettingsHtml()}<button class="v14-pill-btn" data-close-cloud>Close</button></div></div>`}
 async function shareCompare(){const u=compareUrl(),text=`Compare our Winter Arc progress ❄️\n${data.name||'Me'} is on Day ${v13ArcDay()||0}/${v13ArcLength()} with ${v13TotalWins()} wins.\n\nOpen this link to compare: ${u}`;try{if(navigator.share){await navigator.share({title:'Winter Arc Friend Compare',text});return;}await navigator.clipboard?.writeText(u);showToast('Compare link copied 🤝')}catch(e){try{await navigator.clipboard.writeText(u);showToast('Compare link copied 🤝')}catch(_){alert(u)}}}
-async function revokeCloudProfile(){
-  if(!cloudReady()||!data.cloudUserId)return false;
-  try{
-    const u=CLOUD_CFG.url.replace(/\/$/,'');
-    const r=await fetch(u+'/rest/v1/arc_users?id=eq.'+encodeURIComponent(data.cloudUserId),{method:'PATCH',headers:cloudHeaders(),body:JSON.stringify({public_profile:false,last_seen:new Date().toISOString()})});
-    return r.ok;
-  }catch(e){return false;}
-}
 function cloudSettingsHtml(){return `<section class="v14-card"><div class="v14-section-head"><div><span class="v14-kicker">COMMUNITY SYNC</span><h2>Share progress with the creator</h2></div><span class="v14-counter">${data.cloudStatus?escapeHtml(data.cloudStatus):'Optional'}</span></div><label class="v14-toggle-row"><input id="cloudOptIn" type="checkbox" ${data.cloudOptIn?'checked':''}><span><b>Join the community dashboard</b><small>Only if you opt in: name, Arc progress, wins, best streak and last-seen time are shared. Private habit names and journal/sleep data stay local.</small></span></label><label class="v14-toggle-row"><input id="publicProfile" type="checkbox" ${data.publicProfile?'checked':''}><span><b>Allow my shared profile to be visible</b><small>Lets your name/progress appear in community views when the backend is configured.</small></span></label><div class="v14-cloud-actions"><button class="v14-pill-btn primary" data-save-cloud>Save choice</button><button class="v14-pill-btn" data-cloud-sync>Sync now</button></div><small class="v14-cloud-note">Cloud sync is off by default. The app still works fully offline. A Supabase backend must be configured by the creator.</small></section>`}
 
 
@@ -1727,7 +1719,7 @@ document.addEventListener('click',async e=>{
  if(b.dataset.closeCompare!==undefined){e.preventDefault();e.stopImmediatePropagation();window.__v14Compare=false;render();return;}
  if(b.dataset.openCloud!==undefined){e.preventDefault();e.stopImmediatePropagation();window.__v14Cloud=true;render();return;}
  if(b.dataset.closeCloud!==undefined){e.preventDefault();e.stopImmediatePropagation();window.__v14Cloud=false;render();return;}
- if(b.dataset.saveCloud!==undefined){e.preventDefault();e.stopImmediatePropagation();const wasVisible=!!(data.cloudOptIn&&data.publicProfile);data.cloudOptIn=!!$('#cloudOptIn')?.checked;data.publicProfile=!!$('#publicProfile')?.checked;save();if(wasVisible&&(!data.cloudOptIn||!data.publicProfile))await revokeCloudProfile();window.__v14Cloud=false;render();if(data.cloudOptIn)await cloudSync();else showToast('Community sync off');return;}
+ if(b.dataset.saveCloud!==undefined){e.preventDefault();e.stopImmediatePropagation();data.cloudOptIn=!!$('#cloudOptIn')?.checked;data.publicProfile=!!$('#publicProfile')?.checked;save();window.__v14Cloud=false;render();showToast(data.cloudOptIn?'Community sync enabled ☁️':'Community sync off');return;}
  if(b.dataset.cloudSync!==undefined){e.preventDefault();e.stopImmediatePropagation();data.cloudOptIn=!!$('#cloudOptIn')?.checked || data.cloudOptIn;data.publicProfile=!!$('#publicProfile')?.checked || data.publicProfile;save();await cloudSync();return;}
 },{capture:true});
 window.addEventListener('hashchange',()=>{if(compareFromHash()){window.__v14Compare=true;render();}});
@@ -2245,11 +2237,11 @@ if(data.profileCreated||data.onboardingDone)save();
 
   function v18CreatorCard(){
     const n=creatorName(),h=creatorHandle(),photo=data.creatorPhoto||'creator-profile.jpg';
-    return `<div class="v18-entrycredit"><label>BUILT BY</label><button type="button" data-v18-creator-open><img src="${escapeHtml(photo)}" alt="${escapeHtml(n)}"><span><b>${escapeHtml(n)}</b>${h?`<span>${escapeHtml(h)}</span>`:''}<span>Creator of Winter Arc Tracker</span></span><strong>›</strong></button></div>`;
+    return `<div class="v18-entrycredit"><label>BUILT BY</label><button type="button" data-v18-creator-open aria-label="Open creator profile"><span class="v25-credit-photo"><img src="./${escapeHtml(photo.replace(/^\.\//,''))}" alt="${escapeHtml(n)}" onerror="this.hidden=true;this.parentElement.classList.add('fallback')"><b>${escapeHtml((n||'V').slice(0,2).toUpperCase())}</b></span><span><b>${escapeHtml(n)}</b>${h?`<span>${escapeHtml(h)}</span>`:''}<span>Creator of Winter Arc Tracker</span></span><strong>›</strong></button></div>`;
   }
 
   function v18Welcome(){
-    return `<div class="v18-entry"><div class="v18-entrycard"><div class="v18-entryhero"><div class="v18-logo">❄️</div><div class="v18-kicker">WINTER ARC · 2026</div><h1>Your next 92 days.</h1><p>One simple place for your habits, streaks and small wins.</p></div><div class="v18-steps"><i class="v18-dot on"></i><i class="v18-dot"></i><i class="v18-dot"></i></div>${v18CreatorCard()}<button class="v18-btn primary" style="width:100%;min-height:50px" data-v18-next>🚀 Start my Arc</button><button class="v18-btn" style="width:100%;margin-top:7px" data-v18-existing>↪ I already have an Arc</button><p class="v18-muted" style="text-align:center;margin:11px 0 0">Start simple. Change anything later.</p></div></div>`;
+    return `<div class="v18-entry"><div class="v18-entrycard"><div class="v18-entryhero"><div class="v18-logo">❄️</div>${v18CreatorCard()}<div class="v18-kicker">WINTER ARC · 2026</div><h1>Your next 92 days.</h1><p>One simple place for your habits, streaks and small wins.</p></div><div class="v18-steps"><i class="v18-dot on"></i><i class="v18-dot"></i><i class="v18-dot"></i></div><button class="v18-btn primary" style="width:100%;min-height:50px" data-v18-next>🚀 Start my Arc</button><button class="v18-btn" style="width:100%;margin-top:7px" data-v18-existing>↪ I already have an Arc</button><p class="v18-muted" style="text-align:center;margin:11px 0 0">Start simple. Change anything later.</p></div></div>`;
   }
 
   function v18Setup(){
@@ -2575,7 +2567,7 @@ if(data.profileCreated||data.onboardingDone)save();
       v19BoardState={status:'offline',rows:[],error:'Community is not connected yet.',updatedAt:Date.now()};render();return;
     }
     try{
-      const q='select=id,display_name,instagram_handle,arc_day,total_arc_days,arc_progress,total_wins,best_streak,last_seen,public_profile,week_score,rank_score,league,week_key&public_profile=eq.true&order=rank_score.desc,best_streak.desc,total_wins.desc,id.asc&limit=1000';
+      const q='select=id,display_name,instagram_handle,arc_day,total_arc_days,arc_progress,total_wins,best_streak,last_seen,public_profile,week_score,rank_score,league,week_key&public_profile=eq.true&order=rank_score.desc,best_streak.desc,total_wins.desc&limit=100';
       const r=await fetch(CLOUD_CFG.url+'/rest/v1/arc_users?'+q,{headers:cloudHeaders()});
       if(!r.ok)throw new Error('leaderboard '+r.status);
       const rows=(await r.json()).filter(x=>x&&x.public_profile).map(x=>Object.assign({},x,{rankScore:Number(x.rank_score??x.arc_progress??0)}));
@@ -2786,7 +2778,7 @@ render();
   }
   function v20League(league){return String(league||'Starter')}
   function v20Top20(){return v20RankRows.slice(0,20)}
-  function v20Filtered(){const q=v20RankQuery.trim().toLowerCase();if(!q)return v20Top20();return v20Top20().filter(x=>String(x.display_name||'').toLowerCase().includes(q))}
+  function v20Filtered(){const q=v20RankQuery.trim().toLowerCase();if(!q)return v20Top20();return v20Top20().filter(x=>String(x.display_name||'').toLowerCase().includes(q)||String(x.instagram_handle||'').toLowerCase().includes(q))}
   function v20RankMy(){const id=data.cloudUserId||'';const i=v20RankRows.findIndex(x=>x.id===id);return i>=0?{rank:i+1,row:v20RankRows[i]}:{rank:null,row:null}}
   async function v20LoadRank(){
     if(v20RankStatus==='loading')return;
@@ -2794,7 +2786,7 @@ render();
     if(!(typeof cloudReady==='function'&&cloudReady())){v20RankStatus='offline';v20RankError='Community sync is not configured yet. Your local score is still available.';renderV20();return;}
     try{
       if(data.cloudOptIn&&typeof cloudSync==='function')await cloudSync();
-      const q='select=id,display_name,instagram_handle,arc_day,total_arc_days,arc_progress,total_wins,best_streak,week_score,rank_score,league,week_key,last_seen,public_profile&public_profile=eq.true&order=rank_score.desc,best_streak.desc,total_wins.desc,id.asc&limit=1000';
+      const q='select=id,display_name,arc_day,total_arc_days,arc_progress,total_wins,best_streak,week_score,rank_score,league,week_key,last_seen,public_profile&public_profile=eq.true&order=rank_score.desc,best_streak.desc,total_wins.desc&limit=100';
       const r=await fetch(CLOUD_CFG.url+'/rest/v1/arc_users?'+q,{headers:typeof cloudHeaders==='function'?cloudHeaders():{}});
       if(!r.ok)throw new Error('rank '+r.status);
       v20RankRows=(await r.json()).filter(x=>x&&x.public_profile).map(x=>Object.assign({},x,{rankScore:Number(x.rank_score??0)}));
@@ -2804,51 +2796,10 @@ render();
       renderV20();
     }catch(e){v20RankStatus='error';v20RankError='Could not load the public Top 20 right now. Check Community Sync and try again.';renderV20();}
   }
-  /* ========================= V24.1 STABLE PATCH ========================= */
-  function v241PriorityRank(h){
-    const p=String(h?.priority||'').toLowerCase();
-    return p==='must'?0:p==='should'?1:p==='bonus'?2:9;
-  }
-  function v241Daily3Habits(){
-    return data.habits.slice().sort((a,b)=>{
-      const pd=v241PriorityRank(a)-v241PriorityRank(b);
-      if(pd) return pd;
-      return data.habits.indexOf(a)-data.habits.indexOf(b);
-    }).slice(0,3);
-  }
-  function v241PriorityLabel(h,i){
-    const p=String(h?.priority||'').toLowerCase();
-    return p==='must'?'MUST DO':p==='should'?'SHOULD DO':p==='bonus'?'BONUS':['MUST DO','SHOULD DO','BONUS'][i]||'TODAY';
-  }
-  function v241RecoveryDays(){
-    if(!data.habits.length) return 0;
-    let n=0;
-    for(let i=1;i<=2;i++){
-      const d=addDays(today(),-i);
-      const eligible=data.habits.filter(h=>canUseHabitOn(h,d));
-      if(!eligible.length || eligible.some(h=>active(h,d))) break;
-      n++;
-    }
-    return n;
-  }
-  function v241RecoveryCard(){
-    const missed=v241RecoveryDays();
-    if(!missed) return '';
-    const f=focusHabit();
-    return `<section class="v241-recovery"><div><div class="v241-kicker">🛟 RECOVERY PASS</div><h3>${missed} missed day${missed===1?'':'s'} — no reset needed.</h3><p>Start again with the smallest version today. Your Arc history stays intact.</p></div>${f?`<button class="v20-check" data-v20-complete="${escapeHtml(f.id)}" aria-label="Start your next win">→</button>`:''}</section>`;
-  }
-  function v241CreatorCredit(){
-    const name=creatorName();
-    const handle=creatorHandle();
-    const photos=['creator-photo-1.jpg','creator-photo-2.jpg','creator-photo-3.jpg'];
-    return `<button class="v241-creator-card" data-v20-more="credits" aria-label="Open creator credits"><div class="v241-creator-head"><img src="creator-profile.jpg" alt="${escapeHtml(name)}"><div><span class="v241-kicker">CREDIT BY</span><b>${escapeHtml(name)}</b><small>Data Engineer · ${escapeHtml(handle||'@pandatvikas1')}</small></div><strong>→</strong></div><div class="v241-creator-photos">${photos.map((x,i)=>`<img src="${x}" alt="${escapeHtml(name)} photo ${i+1}" loading="lazy">`).join('')}</div></button>`;
-  }
-
   function v20HabitRow(h){const d=today(),is=done(h,d),hs=habitStats(h);return `<article class="v20-habit ${is?'completed':''}"><div class="v20-hicon">${escapeHtml(h.icon||'✅')}</div><div><div class="v20-habit-name">${escapeHtml(h.name)}${h.private?' 🔒':''}</div><div class="v20-habit-meta">🔥 ${hs.run} day streak · ${hs.weekPct}% this week · ${escapeHtml(h.smallWin||h.action||'Smallest useful version')}</div></div><button class="v20-smallcheck ${is?'done':''}" data-v20-complete="${escapeHtml(h.id)}" aria-label="${is?'Undo':'Complete'} ${escapeHtml(h.name)}">${is?'✓':'○'}</button></article>`}
   function v20Today(){
-    const s=stats(),day=v20Day(),pct=data.habits.length?Math.round(s.todayDone/data.habits.length*100):0,f=focusHabit(),rank=v20LocalRank(),daily=v241Daily3Habits();
-    const todayList=daily.length?daily.map((h,i)=>`<div class="v241-daily3-block"><div class="v241-daily3-label">${v241PriorityLabel(h,i)}</div>${v20HabitRow(h)}</div>`).join(''):`<div class="v20-note"><b>No habits yet.</b>Add your first habit to start today.</div>`;
-    return `<div class="v20-page"><section class="v20-hero"><div class="v20-hero-row"><div><div class="v20-kicker">WINTER ARC · ${day?'DAY '+day:'SETUP DAY'}</div><h1>${data.name?'Hi, '+escapeHtml(data.name)+' 👋':'Your next win starts here'}</h1><p>${day?`${s.todayDone}/${data.habits.length} habits done today.`:'Today is setup day. Tomorrow is Day 1.'}</p></div><div class="v20-ring" style="--p:${pct}%"><div><b>${pct}%</b><span>today</span></div></div></div></section>${f?`<section class="v20-next"><div class="v20-next-head"><div><div class="v20-next-label">NEXT WIN</div><h2>${escapeHtml(f.name)}</h2><p>${escapeHtml(f.smallWin||f.action||'Smallest useful version')}</p></div></div><div class="v20-next-row"><div class="v20-hicon">${escapeHtml(f.icon||'✅')}</div><div><div class="v20-next-name">${done(f,today())?'Completed ✓':'Ready when you are'}</div><div class="v20-next-action">🔥 ${habitStats(f).run} day streak · one useful action</div></div><button class="v20-check ${done(f,today())?'done':''}" data-v20-complete="${escapeHtml(f.id)}">${done(f,today())?'✓':'→'}</button></div></section>`:''}<section class="v20-section"><div class="v20-head"><h2>Daily 3</h2><span>${s.todayDone}/${data.habits.length} complete</span></div><div class="v20-list">${todayList}</div>${data.habits.length>3?`<button class="v20-tool" data-v20-more="manage"><b>View all ${data.habits.length} habits →</b><small>Keep Today focused on your Daily 3.</small></button>`:''}</section>${v241RecoveryCard()}<section class="v20-section"><div class="v20-head"><h2>Your numbers</h2><span>Keep it simple</span></div><div class="v20-statbar"><div class="v20-stat"><b>🔥 ${Math.max(0,...data.habits.map(h=>habitStats(h).longest))}</b><span>Best streak</span></div><div class="v20-stat"><b>${s.completed}</b><span>Total wins</span></div><div class="v20-stat"><b>${rank.score}</b><span>Arc score</span></div></div></section>${v241CreatorCredit()}</div>`;
+    const s=stats(),day=v20Day(),pct=data.habits.length?Math.round(s.todayDone/data.habits.length*100):0,f=focusHabit(),rank=v20LocalRank();
+    return `<div class="v20-page"><section class="v20-hero"><div class="v20-hero-row"><div><div class="v20-kicker">WINTER ARC · ${day?'DAY '+day:'SETUP DAY'}</div><h1>${data.name?'Hi, '+escapeHtml(data.name)+' 👋':'Your next win starts here'}</h1><p>${day?`${s.todayDone}/${data.habits.length} habits done today.`:'Today is setup day. Tomorrow is Day 1.'}</p></div><div class="v20-ring" style="--p:${pct}%"><div><b>${pct}%</b><span>today</span></div></div></div></section>${f?`<section class="v20-next"><div class="v20-next-head"><div><div class="v20-next-label">NEXT WIN</div><h2>${escapeHtml(f.name)}</h2><p>${escapeHtml(f.smallWin||f.action||'Smallest useful version')}</p></div></div><div class="v20-next-row"><div class="v20-hicon">${escapeHtml(f.icon||'✅')}</div><div><div class="v20-next-name">${done(f,today())?'Completed ✓':'Ready when you are'}</div><div class="v20-next-action">🔥 ${habitStats(f).run} day streak · one useful action</div></div><button class="v20-check ${done(f,today())?'done':''}" data-v20-complete="${escapeHtml(f.id)}">${done(f,today())?'✓':'→'}</button></div></section>`:''}<section class="v20-section"><div class="v20-head"><h2>Today</h2><span>${s.todayDone}/${data.habits.length} complete</span></div><div class="v20-list">${data.habits.length?data.habits.map(v20HabitRow).join(''):`<div class="v20-note"><b>No habits yet.</b>Add your first habit to start today.</div>`}</div></section><section class="v20-section"><div class="v20-head"><h2>Your numbers</h2><span>Keep it simple</span></div><div class="v20-statbar"><div class="v20-stat"><b>🔥 ${Math.max(0,...data.habits.map(h=>habitStats(h).longest))}</b><span>Best streak</span></div><div class="v20-stat"><b>${s.completed}</b><span>Total wins</span></div><div class="v20-stat"><b>${rank.score}</b><span>Arc score</span></div></div></section></div>`;
   }
   function v20Week(){
     const s=stats(),ds=typeof v12MiniDays==='function'?v12MiniDays():[],eligible=(d)=>data.habits.filter(h=>canUseHabitOn(h,d)).length,n=(d)=>data.habits.filter(h=>active(h,d)).length;
@@ -2857,7 +2808,7 @@ render();
   function v20Rank(){
     const local=v20LocalRank(),me=v20RankMy(),rows=v20Filtered();
     const rankText=me.rank?'#'+me.rank:'Top 20';
-    return `<div class="v20-page"><section class="v20-rank-hero"><div class="v20-rank-top"><div><div class="v20-kicker" style="color:#bfe8ca">ARC LEAGUE</div><h1>${rankText}</h1><p>${v20RankStatus==='ready'?'Public leaderboard synced.':'Your local Arc score is ready.'}</p></div><div class="v20-score"><b>${local.score}</b><span>rank score</span></div></div><div class="v20-rank-track"><i style="width:${local.score}%"></i></div><div class="v20-rank-pills"><span class="v20-pill">${v20League(local.league)}</span><span class="v20-pill">${local.week}% week</span><span class="v20-pill">🔥 ${Math.max(0,...data.habits.map(h=>habitStats(h).longest))}</span></div></section><section class="v20-section"><div class="v20-rankbar"><h2>🏆 Top 20</h2><button class="v20-refresh" data-v20-rank-refresh>↻</button></div><input class="v20-search" id="v20RankSearch" placeholder="Search Top 20 by name" value="${escapeHtml(v20RankQuery)}">${v20RankStatus==='offline'||v20RankStatus==='error'?`<div class="v20-note"><b>${escapeHtml(v20RankError)}</b>Turn on Community Sync to publish and load the global leaderboard.</div>`:''}<div class="v20-ranklist" style="margin-top:7px">${rows.length?rows.map((x)=>{const r=v20RankRows.indexOf(x)+1,name=escapeHtml(x.display_name||'Anonymous'),initial=escapeHtml((x.display_name||'?').slice(0,1).toUpperCase()),score=Number(x.rankScore)||0,league=escapeHtml(x.league||'Starter');return `<div class="v20-rankrow ${data.cloudUserId&&x.id===data.cloudUserId?'me':''}"><div class="v20-ranknum">#${r}</div><div class="v20-rankavatar">${initial}</div><div><div class="v20-rankname">${name}</div><div class="v20-ranksub">${Number(x.rankScore)||0} Score · ${Number(x.total_wins)||0} Wins · 🔥 ${Number(x.best_streak)||0} Streak</div></div><div class="v20-rankside"><b>${score}</b><span>${league}</span></div></div>`}).join(''):`<div class="v20-note"><b>Top 20 is waiting.</b>${v20RankStatus==='loading'?'Loading public profiles…':'Make your Arc public and the leaderboard will appear here.'}</div>`}</div>${v20RankRows.length>20?`<div class="v20-note" style="margin-top:8px"><b>Your global position</b>${me.rank&&me.rank>20?`You are #${me.rank}. The public screen keeps the Top 20 visible above.`:'You are currently inside the Top 20.'}</div>`:''}</section><section class="v20-note" style="margin-top:9px"><b>How score works</b>75% weekly consistency + 15% best streak + 10% weekly wins. Private habits and personal notes stay out of the public profile.</section></div>`;
+    return `<div class="v20-page"><section class="v20-rank-hero"><div class="v20-rank-top"><div><div class="v20-kicker" style="color:#bfe8ca">ARC LEAGUE</div><h1>${rankText}</h1><p>${v20RankStatus==='ready'?'Public leaderboard synced.':'Your local Arc score is ready.'}</p></div><div class="v20-score"><b>${local.score}</b><span>rank score</span></div></div><div class="v20-rank-track"><i style="width:${local.score}%"></i></div><div class="v20-rank-pills"><span class="v20-pill">${v20League(local.league)}</span><span class="v20-pill">${local.week}% week</span><span class="v20-pill">🔥 ${Math.max(0,...data.habits.map(h=>habitStats(h).longest))}</span></div></section><section class="v20-section"><div class="v20-rankbar"><h2>🏆 Top 20</h2><button class="v20-refresh" data-v20-rank-refresh>↻</button></div><input class="v20-search" id="v20RankSearch" placeholder="Search Top 20 by name" value="${escapeHtml(v20RankQuery)}">${v20RankStatus==='offline'||v20RankStatus==='error'?`<div class="v20-note"><b>${escapeHtml(v20RankError)}</b>Turn on Community Sync to publish and load the global leaderboard.</div>`:''}<div class="v20-ranklist" style="margin-top:7px">${rows.length?rows.map((x)=>{const r=v20RankRows.indexOf(x)+1,name=escapeHtml(x.display_name||'Anonymous'),initial=escapeHtml((x.display_name||'?').slice(0,1).toUpperCase()),score=Number(x.rankScore)||0,league=escapeHtml(x.league||'Starter');return `<div class="v20-rankrow ${data.cloudUserId&&x.id===data.cloudUserId?'me':''}"><div class="v20-ranknum">#${r}</div><div class="v20-rankavatar">${initial}</div><div><div class="v20-rankname">${name}</div><div class="v20-ranksub">${Number(x.total_wins)||0} wins · 🔥 ${Number(x.best_streak)||0} streak</div></div><div class="v20-rankside"><b>${score}</b><span>${league}</span></div></div>`}).join(''):`<div class="v20-note"><b>Top 20 is waiting.</b>${v20RankStatus==='loading'?'Loading public profiles…':'Make your Arc public and the leaderboard will appear here.'}</div>`}</div>${v20RankRows.length>20?`<div class="v20-note" style="margin-top:8px"><b>Your global position</b>${me.rank&&me.rank>20?`You are #${me.rank}. The public screen keeps the Top 20 visible above.`:'You are currently inside the Top 20.'}</div>`:''}</section><section class="v20-note" style="margin-top:9px"><b>How score works</b>75% weekly consistency + 15% best streak + 10% weekly wins. Private habits and personal notes stay out of the public profile.</section></div>`;
   }
   function v20Profile(){
     const s=stats(),day=v20Day(),pct=v20ArcPct(),rank=v20LocalRank();
@@ -2866,11 +2817,15 @@ render();
   function v20More(){
     if(morePanel){
       let body='';
-      try{body=morePanel==='manage'?manageHabitsHtml():morePanel==='goals'?goalsHtml():morePanel==='routine'?routineHtml():morePanel==='checkin'?checkinHtml():morePanel==='journal'?journalHtml():morePanel==='sleep'?sleepHtml():morePanel==='planner'?plannerHtml():morePanel==='reminders'?remindersHtml():morePanel==='settings'?settingsHtml():morePanel==='backup'?backupPage():morePanel==='credits'?creditsHtml():morePanel==='creator'?creatorPage():morePanel==='about'?aboutPage():morePanel==='getapp'?getAppPage():morePanel==='achievements'?achievementsPage():morePanel==='insights'?insightsPage():'<div class="v20-note">Tool unavailable.</div>'}catch(e){body='<div class="v20-note">Tool unavailable. Your tracker data is safe.</div>'}
-      return `<div class="v20-page"><section class="v20-section"><div class="v20-head"><h2>${escapeHtml(morePanel.charAt(0).toUpperCase()+morePanel.slice(1))}</h2><button class="v20-refresh" data-v20-close>×</button></div>${body}</section></div>`;
+      try{body=morePanel==='manage'?manageHabitsHtml():morePanel==='goals'?goalsHtml():morePanel==='routine'?routineHtml():morePanel==='checkin'?checkinHtml():morePanel==='journal'?journalHtml():morePanel==='sleep'?sleepHtml():morePanel==='planner'?plannerHtml():morePanel==='reminders'?remindersHtml():morePanel==='security'?securityHtml():morePanel==='settings'?settingsHtml():morePanel==='backup'?backupPage():morePanel==='creator'?creatorPage():morePanel==='about'?aboutPage():morePanel==='getapp'?getAppPage():morePanel==='achievements'?achievementsPage():morePanel==='insights'?insightsPage():morePanel==='credits'?creditsHtml():morePanel==='rank'?v20Rank():morePanel==='arc'?v24Arc():morePanel==='month'?v24Month():morePanel==='profile'?v20Profile():'<div class="v24-empty">Tool unavailable.</div>'}catch(e){body='<div class="v24-empty">Tool unavailable. Your tracker data is safe.</div>'}
+      return `<div class="v24-page"><section class="v24-detail-head"><button class="btn" data-v20-close>← More</button><h1>${escapeHtml(morePanel.charAt(0).toUpperCase()+morePanel.slice(1))}</h1></section>${body}</div>`;
     }
-    const tile=(i,t,sub,id)=>`<button class="v20-tool" data-v20-more="${id}"><b>${i} ${t}</b><small>${sub}</small></button>`;
-    return `<div class="v20-page"><section class="v20-hero"><div class="v20-kicker">MORE</div><h1 style="font-size:24px">Keep the tools out of the way.</h1><p>Advanced features live here so Today stays clean.</p></section><section class="v20-section"><div class="v20-head"><h2>Tools</h2><span>Tap one</span></div><div class="v20-tools">${tile('✅','Manage habits','Add, edit or remove habits.','manage')}${tile('🎯','Goals','Set a target and link habits.','goals')}${tile('🔁','Routines','Build a step-by-step routine.','routine')}${tile('🗓️','Planner','Set preferred times.','planner')}${tile('🌤️','Check-in','Mood and energy.','checkin')}${tile('🔒','Private Wellness','Private personal space.','security')}${tile('✍️','Journal','Write one useful sentence.','journal')}${tile('😴','Sleep','Track sleep basics.','sleep')}${tile('⏰','Reminders','Optional local reminders.','reminders')}${tile('🏆','Achievements','See milestones.','achievements')}${tile('📈','Insights','Useful patterns.','insights')}${tile('❤️','Credits','Meet the creator.','credits')}${tile('👤','Creator','About the creator.','creator')}${tile('⚙️','Settings','Privacy, creator, theme and backup.','settings')}${tile('📱','Install app','Use Winter Arc like an app.','getapp')}${tile('💾','Backup','Export or restore your data.','backup')}<button class="v20-tool" data-open-share-center><b>↗ Share & invite</b><small>Share progress or invite a friend.</small></button><button class="v20-tool" data-open-compare><b>⚔️ Compare with a friend</b><small>Share a progress snapshot.</small></button><button class="v20-tool" data-open-cloud><b>☁️ Community sync</b><small>Optional public Arc League sync.</small></button></div></section></div>`;
+    const tile=(icon,title,sub,id)=>`<button class="v24-tool-tile" data-v20-more="${id}" aria-label="${escapeHtml(title)}"><span>${icon}</span><div><b>${escapeHtml(title)}</b><small>${escapeHtml(sub)}</small></div><strong>→</strong></button>`;
+    const special=(icon,title,sub,attr)=>`<button class="v24-tool-tile" ${attr}><span>${icon}</span><div><b>${escapeHtml(title)}</b><small>${escapeHtml(sub)}</small></div><strong>→</strong></button>`;
+    return `<div class="v24-page"><section class="v24-page-head"><span class="kicker">MORE</span><h1>Everything advanced, kept simple.</h1><p>Today stays focused. Open deeper tools only when you need them.</p></section>
+      <section class="v24-group"><h2>Your Journey</h2>${tile('📈','Insights','Spot patterns and trends.','insights')}${tile('🏆','Achievements','Milestones and progress.','achievements')}${tile('❄️','Arc','Your full 92-day journey.','arc')}${tile('🗓️','Month','Calendar and monthly breakdown.','month')}</section>
+      <section class="v24-group"><h2>Daily Tools</h2>${tile('✅','Manage habits','Add, edit, private labels and history.','manage')}${tile('🎯','Goals','One focus and measurable target.','goals')}${tile('🔁','Routines','Build and run step-by-step routines.','routine')}${tile('🗓️','Day planner','Set preferred times.','planner')}${tile('🌤️','Mood & energy','Quick private check-in.','checkin')}${tile('✍️','Journal','One-line reflection.','journal')}${tile('😴','Sleep','Track sleep basics.','sleep')}${tile('⏰','Reminders','Optional local reminders.','reminders')}${tile('🔐','Privacy & security','PIN and profile security.','security')}</section>
+      <section class="v24-group"><h2>Community & App</h2>${special('↗','Share & invite','4:5 progress card and invite link.','data-open-share-center')}${special('⚔️','Compare with a friend','Compare shared Arc snapshots.','data-open-compare')}${special('☁️','Community Sync','Optional cloud sharing and public profile.','data-open-cloud')}${tile('🏆','Top 20 Rank','Public leaderboard and exact rank.','rank')}${tile('📱','Get the App','Install as an app when supported.','getapp')}${tile('👤','Creator','Meet the creator.','creator')}${tile('❤️','Credits','Creator credit and photo showcase.','credits')}${tile('💾','Backup','Export or restore local data.','backup')}${tile('⚙️','Settings','Theme, sync and local controls.','settings')}${tile('ℹ️','About Winter Arc','How Winter Arc works.','about')}</section></div>`;
   }
   function v20Menu(){return `<div class="v20-menu-bg" data-v20-menu-close><aside class="v20-menu" role="dialog" aria-modal="true"><div class="v20-menu-head"><div><div class="v20-kicker">WINTER ARC</div><h2>Quick navigation</h2></div><button class="v20-iconbtn" data-v20-menu-close>×</button></div><div class="v20-menu-links"><button data-v20-nav="today">🏠 Today</button><button data-v20-nav="week">📅 Week</button><button data-v20-nav="rank">🏆 Top 20 Rank</button><button data-v20-nav="profile">👤 Profile</button><button data-v20-nav="arc">❄️ Arc</button><button data-v20-nav="month">🗓️ Month</button><button data-v20-nav="more">••• More</button></div></aside></div>`}
   function v20Shell(){
@@ -2878,23 +2833,12 @@ render();
     let body=tab==='today'?v20Today():tab==='week'?v20Week():tab==='rank'?v20Rank():tab==='profile'?v20Profile():tab==='arc'?`<div class=\"v20-page\"><div class=\"v20-legacy-wrap\">${v14ArcPage()}</div></div>`:tab==='month'?`<div class=\"v20-page\"><div class=\"v20-legacy-wrap\">${v14MonthPage()}</div></div>`:v20More();
     const labels=[['today','🏠','Today'],['week','📅','Week'],['rank','🏆','Rank'],['profile','👤','Profile'],['more','•••','More']];
     document.body.classList.toggle('dark',!!data.dark);
-    document.body.innerHTML=`<div class="v20-app"><header class="v20-top"><div class="v20-toprow"><button class="v20-iconbtn" data-v20-menu aria-label="Menu">☰</button><div class="v20-brand"><b>Winter Arc</b><span>V24.1 Stable · ${escapeHtml(data.name||'Your Arc')}</span></div><button class="v20-iconbtn" data-v20-share aria-label="Share">↗</button><button class="v20-iconbtn" data-v20-nav="profile" aria-label="Profile">${initial}</button></div></header><main class="v20-main">${body}</main><nav class="v20-bottom"><div class="v20-bottom-inner">${labels.map(([id,icon,label])=>`<button class="${tab===id?'active':''}" data-v20-nav="${id}"><b>${icon}</b>${label}</button>`).join('')}</div></nav>${v20MenuOpen?v20Menu():''}</div>`;
+    document.body.innerHTML=`<div class="v20-app"><header class="v20-top"><div class="v20-toprow"><button class="v20-iconbtn" data-v20-menu aria-label="Menu">☰</button><div class="v20-brand"><b>Winter Arc</b><span>2026 · ${escapeHtml(data.name||'Your Arc')}</span></div><button class="v20-iconbtn" data-v20-share aria-label="Share">↗</button><button class="v20-iconbtn" data-v20-nav="profile" aria-label="Profile">${initial}</button></div></header><main class="v20-main">${body}</main><nav class="v20-bottom"><div class="v20-bottom-inner">${labels.map(([id,icon,label])=>`<button class="${tab===id?'active':''}" data-v20-nav="${id}"><b>${icon}</b>${label}</button>`).join('')}</div></nav>${v20MenuOpen?v20Menu():''}</div>`;
     if(tab==='rank'&&v20RankStatus==='idle')setTimeout(v20LoadRank,0);
   }
   const previousRenderV20=render;
-  function v241Style(){
-    if(document.getElementById('v241-style'))return;
-    const st=document.createElement('style');st.id='v241-style';st.textContent=`
-      .v241-daily3-block{display:grid;gap:5px;margin-bottom:7px}.v241-daily3-label{font-size:8px;font-weight:950;letter-spacing:.12em;color:var(--green2);padding:5px 7px;border-radius:8px;background:var(--soft);justify-self:start}
-      .v241-recovery{display:grid;grid-template-columns:minmax(0,1fr) 48px;gap:10px;align-items:center;border:1px solid #d8cda9;background:linear-gradient(145deg,#fff8df,#fff);border-radius:18px;padding:12px;margin:9px 0}.v241-recovery h3{margin:3px 0;font-size:15px;letter-spacing:-.025em}.v241-recovery p{margin:0;color:var(--muted);font-size:9px;line-height:1.4}.v241-kicker{font-size:8px;font-weight:950;letter-spacing:.12em;color:var(--green2)}
-      body.dark .v241-recovery{background:linear-gradient(145deg,#2b291c,#1a211b);border-color:#5a5437}
-      .v241-creator-card{width:100%;margin-top:10px;border:1px solid var(--line);background:var(--card);border-radius:20px;padding:11px;text-align:left;color:var(--ink)}.v241-creator-head{display:grid;grid-template-columns:48px minmax(0,1fr) 26px;gap:9px;align-items:center}.v241-creator-head img{width:48px;height:48px;border-radius:14px;object-fit:cover}.v241-creator-head b{display:block;font-size:12px}.v241-creator-head small{display:block;color:var(--muted);font-size:8px;margin-top:2px}.v241-creator-head strong{color:var(--green2);font-size:18px;text-align:center}.v241-creator-photos{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}.v241-creator-photos img{width:100%;height:74px;object-fit:cover;border-radius:11px;display:block}
-    `;document.head.appendChild(st);
-  }
-
   function renderV20(){
     v20Style();
-    v241Style();
     if(isLocked()||!data.profileCreated||!data.onboardingDone){previousRenderV20();return;}
     v20Shell();
   }
@@ -2914,7 +2858,467 @@ render();
   document.addEventListener('input',e=>{if(e.target?.id==='v20RankSearch'){v20RankQuery=e.target.value;renderV20();const el=document.getElementById('v20RankSearch');if(el){el.focus();el.setSelectionRange(v20RankQuery.length,v20RankQuery.length)}}},{passive:true});
 
   /* Start V20 shell after the legacy boot has initialized the existing store. */
+
+  /* ========================= V24.1 STABILITY + UX PATCH ========================= */
+  let v24DeleteHabitId=null;
+  let v24LoginError='';
+  let v24RankMyGlobal=null;
+  let v20RankActive=[];
+  let v24AccessToken='';
+
+  // Fixed Winter Arc date source: historical data is preserved, but current Arc metrics
+  // only count 1 Oct 2026 → 31 Dec 2026 and a habit only from its created date.
+  data.arcStart=WINTER_ARC_START;
+  data.arcLength=WINTER_ARC_LENGTH;
+  if(!/^2026-(10|11|12)$/.test(data.month||''))data.month=currentMonth();
+  if(data.month<'2026-10')data.month='2026-10';
+  if(data.month>'2026-12')data.month='2026-12';
+  save();
+
+  canUseHabitOn=function(h,d){
+    if(!h||typeof d!=='string')return false;
+    if(d<WINTER_ARC_START||d>WINTER_ARC_END)return false;
+    const created=/^\d{4}-\d{2}-\d{2}$/.test(String(h.created||''))?String(h.created):WINTER_ARC_START;
+    return d>=created;
+  };
+  journeyDay=function(){
+    if(today()<WINTER_ARC_START)return 0;
+    return Math.min(WINTER_ARC_LENGTH,Math.max(0,dateDiff(WINTER_ARC_START,today())+1));
+  };
+  allDates=function(){
+    if(today()<WINTER_ARC_START)return [];
+    const stop=today()>WINTER_ARC_END?WINTER_ARC_END:today();
+    const n=Math.max(0,dateDiff(WINTER_ARC_START,stop)+1);
+    return Array.from({length:n},(_,i)=>addDays(WINTER_ARC_START,i));
+  };
+  habitStats=function(h){
+    const dates=allDates().filter(d=>canUseHabitOn(h,d));
+    let run=0,longest=0,cur=0;
+    if(dates.length){
+      let idx=dates.length-1;
+      if(dates[idx]===today()&&!active(h,today()))idx--;
+      for(;idx>=0;idx--){if(active(h,dates[idx]))run++;else break;}
+      for(const d of dates){if(active(h,d)){cur++;longest=Math.max(longest,cur);}else cur=0;}
+    }
+    const total=dates.filter(d=>done(h,d)).length;
+    const weekDates=dates.filter(d=>d>=addDays(today(),-6)&&d<=today());
+    const weekDone=weekDates.filter(d=>active(h,d)).length;
+    const monthDates=makeDays(data.month).filter(d=>d>=WINTER_ARC_START&&d<=WINTER_ARC_END&&d<=today()&&canUseHabitOn(h,d));
+    const monthDone=monthDates.filter(d=>done(h,d)).length;
+    const monthEligible=Math.max(1,monthDates.length);
+    return {run,longest,total,weekDone,weekPct:Math.round(weekDone/7*100),monthDone,monthPct:Math.round(monthDone/monthEligible*100)};
+  };
+  weeklyScore=function(){
+    const ds=allDates().filter(d=>d>=addDays(today(),-6));
+    let eligible=0,n=0;
+    for(const d of ds)for(const h of data.habits){if(!canUseHabitOn(h,d))continue;eligible++;if(active(h,d))n++;}
+    return eligible?Math.min(100,Math.round(n/eligible*100)):0;
+  };
+  stats=function(){
+    const ds=allDates(); let total=0,completed=0;
+    for(const d of ds)for(const h of data.habits){if(canUseHabitOn(h,d)){total++;if(done(h,d))completed++;}}
+    const todayDone=data.habits.filter(h=>done(h,today())).length;
+    let full=0;
+    for(let i=ds.length-1;i>=0;i--){const d=ds[i];if(d===today()&&!data.habits.every(h=>active(h,d)))continue;if(data.habits.length&&data.habits.every(h=>active(h,d)))full++;else break;}
+    let longest=0,cur=0;
+    for(const d of ds){if(data.habits.length&&data.habits.every(h=>active(h,d))){cur++;longest=Math.max(longest,cur);}else cur=0;}
+    let bestH=null,best=0;
+    for(const h of data.habits){const n=habitStats(h).total;if(n>best){best=n;bestH=h;}}
+    const sleepVals=ds.map(d=>Number(data.sleep[d]?.hours)).filter(v=>v>0);
+    const avg=sleepVals.length?sleepVals.reduce((a,b)=>a+b,0)/sleepVals.length:0;
+    const firstWin=data.habits.some(h=>done(h,today()));
+    return {total,completed,pct:total?Math.round(completed/total*100):0,todayDone,fullStreak:full,longest,bestH,best,avg,score:weeklyScore(),firstWin};
+  };
+
+  // Fixed Arc functions used by the preserved Arc renderer and share card.
+  v13ArcStart=function(){return WINTER_ARC_START;};
+  v13ArcLength=function(){return WINTER_ARC_LENGTH;};
+  v13ArcEnd=function(){return WINTER_ARC_END;};
+  v13ArcStarted=function(){return today()>=WINTER_ARC_START;};
+  v13ArcDay=function(){return today()<WINTER_ARC_START?0:Math.min(WINTER_ARC_LENGTH,dateDiff(WINTER_ARC_START,today())+1);};
+  v13ArcProgress=function(){const d=v13ArcDay();return Math.min(100,Math.round(d/WINTER_ARC_LENGTH*100));};
+  v13ArcRemaining=function(){const d=v13ArcDay();return d?Math.max(0,WINTER_ARC_LENGTH-d):WINTER_ARC_LENGTH;};
+  v13ArcDates=function(){if(today()<WINTER_ARC_START)return [];const stop=today()>WINTER_ARC_END?WINTER_ARC_END:today();const n=dateDiff(WINTER_ARC_START,stop)+1;return Array.from({length:Math.max(0,n)},(_,i)=>addDays(WINTER_ARC_START,i));};
+  v13ArcWins=function(){const ds=v13ArcDates();return data.habits.reduce((n,h)=>n+ds.filter(d=>canUseHabitOn(h,d)&&done(h,d)).length,0);};
+  v13TotalWins=function(){return v13ArcWins();};
+
+  function v24RebuildXp(){
+    const events={}; let xp=0;
+    for(const [k,v] of Object.entries(data.checks||{})){
+      if(!v)continue;
+      const parts=String(k).split('|'); const hid=parts[0], d=parts[1];
+      const h=data.habits.find(x=>x.id===hid);
+      if(!h||!/^\d{4}-\d{2}-\d{2}$/.test(String(d||'')))continue;
+      if(d<WINTER_ARC_START||d>WINTER_ARC_END||!canUseHabitOn(h,d))continue;
+      events[k]=10; xp+=10;
+    }
+    const bonus={};
+    const dates=new Set(Object.keys(events).map(k=>k.split('|')[1]));
+    for(const d of dates){
+      const hasAny=data.habits.some(h=>canUseHabitOn(h,d)&&done(h,d));
+      const allDone=data.habits.length>0&&data.habits.every(h=>!canUseHabitOn(h,d)||done(h,d));
+      bonus[d]={first:hasAny?15:0,full:allDone?25:0};
+      xp+=bonus[d].first+bonus[d].full;
+    }
+    data.xpEvents=events;data.bonusEvents=bonus;data.xp=Math.max(0,Math.round(xp));
+  }
+  v24RebuildXp();
+  recalcBonus=function(d){
+    if(d<WINTER_ARC_START||d>WINTER_ARC_END)return;
+    const hasAny=data.habits.some(h=>canUseHabitOn(h,d)&&done(h,d));
+    const allDone=data.habits.length>0&&data.habits.every(h=>!canUseHabitOn(h,d)||done(h,d));
+    const old=data.bonusEvents[d]||{first:0,full:0};
+    const next={first:hasAny?15:0,full:allDone?25:0};
+    data.xp+=next.first-old.first+next.full-old.full;
+    data.bonusEvents[d]=next;
+    data.xp=Math.max(0,Math.round(data.xp));
+  };
+  save();
+
+  // Exact XP + routine state consistency for every completion/undo.
+  toggleHabit=function(h,d){
+    if(!h)return;
+    if(!canEdit(d)){showToast('Future dates cannot be completed.');return;}
+    if(d<WINTER_ARC_START||d>WINTER_ARC_END){showToast('Only Winter Arc dates can be edited.');return;}
+    if(!canUseHabitOn(h,d)){showToast('This habit was added later.');return;}
+    if(frozen(h,d)){showToast('This day is frozen. Undo Freeze first.');return;}
+    const k=key(h,d),before=done(h,d);
+    if(before){delete data.checks[k];removeXpEvent(k);}
+    else{data.checks[k]=true;addXpEvent(k,10);}
+    recalcBonus(d);
+    if(data.activeRoutine){
+      const r=data.routines.find(x=>x.id===data.activeRoutine);
+      if(r){r.step=routineProgress(r).doneCount;save();}
+    }
+    save();
+    if(!before){celebrate();showToast('Nice! +10 XP 🔥');}
+    else showToast('Check removed');
+    render();
+    if(data.cloudOptIn)cloudSync({silent:true}).catch(()=>{});
+  };
+
+  toggleFreeze=function(h,d){
+    if(!h)return;
+    if(!canEdit(d)){showToast('Future dates cannot be frozen.');return;}
+    if(d<WINTER_ARC_START||d>WINTER_ARC_END){showToast('Only Winter Arc dates can be frozen.');return;}
+    if(d!==today()&&d!==addDays(today(),-1)){showToast('Freeze is only available for today or yesterday.');return;}
+    const k=key(h,d);
+    if(done(h,d)){showToast('Undo the completion first.');return;}
+    const mk=d.slice(0,7);
+    if(frozen(h,d)){
+      delete data.freezes[k];
+      data.freezeUsed[mk]=Object.keys(data.freezes).some(x=>String(x.split('|')[1]||'').slice(0,7)===mk);
+      save();render();showToast('Freeze removed 🛡️');return;
+    }
+    if(data.freezeUsed[mk]){showToast('This month’s freeze is already used 🛡️');return;}
+    data.freezes[k]=true;data.freezeUsed[mk]=true;save();render();showToast('Monthly freeze used 🛡️');
+  };
+
+  addHabit=function(name,icon='✅',privateFlag=false,difficulty='Medium',action='Do the smallest useful version'){
+    const n=String(name||'').trim();if(!n)return false;
+    if(data.habits.length>=15){showToast('Maximum 15 habits reached.');return false;}
+    if(data.habits.some(h=>String(h.name||'').trim().toLowerCase()===n.toLowerCase())){showToast('That habit already exists.');return false;}
+    data.habits.push({id:uid(),name:n,icon:icon||'✅',private:!!privateFlag,created:today(),difficulty:difficulty||'Medium',action:action||'Do the smallest useful version',time:'',smallWin:action||'Do the smallest useful version',why:''});
+    save();return true;
+  };
+
+  removeHabit=function(h){
+    if(!h)return;
+    v24DeleteHabitId=h.id;renderV20();
+  };
+  function v24DeleteConfirm(){
+    const h=data.habits.find(x=>x.id===v24DeleteHabitId);if(!h)return '';
+    return `<div class="overlay v24-modal" role="dialog" aria-modal="true" aria-labelledby="v24DeleteTitle"><div class="modal v24-confirm-modal"><div class="section"><div><div class="kicker">DELETE HABIT</div><h2 id="v24DeleteTitle">Delete “${escapeHtml(h.name)}”?</h2></div><button class="btn small" data-v24-delete-cancel>Close</button></div><p class="muted">This removes the habit, its completion history, freeze records, goal links and routine references. This cannot be undone unless you have a backup.</p><div class="quick-actions"><button class="btn" data-v24-delete-cancel>Keep habit</button><button class="btn danger-btn" data-v24-delete-confirm>Delete permanently</button></div></div></div>`;
+  }
+
+  function habitOverlay(){
+    const h=data.habits.find(x=>x.id===selectedHabit);if(!h)return '';
+    const hs=habitStats(h),ds=makeDays(data.month);
+    return `<div class="overlay v24-modal" role="dialog" aria-modal="true" aria-labelledby="v24HabitTitle"><div class="modal"><div class="section"><div><div class="kicker">HABIT DETAILS</div><h2 id="v24HabitTitle" style="margin:3px 0 0">${escapeHtml(h.icon)} ${escapeHtml(h.name)}</h2></div><button class="btn small" data-close-habit>Close</button></div><div class="grid three"><div class="stat"><small>Current</small><b>${hs.run} 🔥</b></div><div class="stat"><small>Best</small><b>${hs.longest}</b></div><div class="stat"><small>Total</small><b>${hs.total}</b></div></div><div class="form" style="margin-top:10px"><div class="field"><label>Habit name</label><input id="habitName" maxlength="40" value="${escapeHtml(h.name)}"></div><div class="field"><label>Icon</label><input id="habitIcon" maxlength="3" value="${escapeHtml(h.icon)}"></div><div class="field"><label>Difficulty</label><select id="habitDifficulty"><option ${h.difficulty==='Easy'?'selected':''}>Easy</option><option ${h.difficulty==='Medium'?'selected':''}>Medium</option><option ${h.difficulty==='Hard'?'selected':''}>Hard</option></select></div><div class="field"><label>Private habit</label><select id="habitPrivate"><option value="0" ${!h.private?'selected':''}>No</option><option value="1" ${h.private?'selected':''}>Yes</option></select></div><div class="field"><label>Best time</label><input id="habitTime" type="time" value="${escapeHtml(h.time||'')}"></div><div class="field"><label>Smallest useful action</label><input id="habitAction" maxlength="80" value="${escapeHtml(h.action||'')}"></div><div class="field"><label>Why</label><input id="habitWhy" maxlength="120" value="${escapeHtml(h.why||'')}"></div></div><label class="smalltext muted" style="display:block;margin-top:10px">Habit note</label><textarea id="habitNote">${escapeHtml(data.habitNotes[h.id]||'')}</textarea><button class="btn primary block" data-save-habit style="margin-top:10px">Save changes ✅</button><div class="section" style="margin-top:15px"><h2>📅 Monthly history</h2><span class="muted smalltext">${escapeHtml(data.month)}</span></div><div class="matrix-wrap"><table class="matrix"><thead><tr><th>Habit</th>${ds.map(d=>`<th>${Number(d.slice(-2))}</th>`).join('')}</tr></thead><tbody><tr><td class="habit-cell">${escapeHtml(h.name)}</td>${ds.map(d=>{const future=d>today(),eligible=canUseHabitOn(h,d),fr=frozen(h,d);return `<td><button class="daycheck ${done(h,d)?'done':''} ${fr?'freeze':''} ${future||!eligible?'future-day':''} ${d===today()?'today':''}" data-toggle="${h.id}|${d}" ${(future||!eligible)?'disabled':''}>${done(h,d)?'✓':fr?'🛡':future||!eligible?'·':''}</button></td>`}).join('')}</tr></tbody></table></div><div class="quick-actions"><button class="btn" data-v24-freeze>${frozen(h,today())?'Remove today' : 'Freeze today'} 🛡️</button><button class="btn danger-btn" data-delete-habit>Delete habit</button></div><div class="note" style="margin-top:9px">🛡 Monthly freeze: ${data.freezeUsed[data.month]?'used':'available'}. Freeze is allowed for today or yesterday only; future dates stay locked.</div></div></div>`;
+  }
+
+  function saveHabitSettings(){
+    const h=data.habits.find(x=>x.id===selectedHabit);if(!h)return;
+    const n=$('#habitName')?.value.trim()||'';
+    if(!n){showToast('Enter a habit name.');return;}
+    if(data.habits.some(x=>x.id!==h.id&&String(x.name||'').trim().toLowerCase()===n.toLowerCase())){showToast('That habit already exists.');return;}
+    h.name=n;h.icon=$('#habitIcon')?.value.trim()||h.icon;h.difficulty=$('#habitDifficulty')?.value||h.difficulty;h.private=$('#habitPrivate')?.value==='1';h.time=$('#habitTime')?.value||'';h.action=$('#habitAction')?.value.trim()||h.action;h.why=$('#habitWhy')?.value.trim()||h.why;data.habitNotes[h.id]=$('#habitNote')?.value||'';save();selectedHabit=null;render();showToast('Habit settings saved ✅');
+  }
+
+  saveNewHabit=function(){
+    const name=$('#newHabitName')?.value.trim()||'';
+    if(!name){showToast('Enter a habit name.');return;}
+    if(data.habits.length>=15){showToast('Maximum 15 habits reached.');return;}
+    const icon=$('#newHabitIcon')?.value.trim()||'✅';
+    const difficulty=$('#newHabitDifficulty')?.value||'Medium';
+    const action=$('#newHabitAction')?.value.trim()||'Do the smallest useful version';
+    const isPrivate=!!$('#newHabitPrivate')?.checked;
+    if(addHabit(name,icon,isPrivate,difficulty,action)){newHabitOpen=false;morePanel='manage';save();render();showToast(`${name} added ✅`);}
+  };
+
+  downloadBackup=function(){
+    const payload=Object.assign({},data,{schema:24,backupVersion:'V24.1',backupCreated:new Date().toISOString()});
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`winter-arc-v24.1-backup-${today()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);showToast('Backup exported 💾');
+  };
+  restoreFile=function(input){
+    const f=input?.files?.[0];if(!f)return;
+    const reader=new FileReader();reader.onload=()=>{
+      try{
+        const raw=JSON.parse(reader.result);
+        if(!raw||Array.isArray(raw)||typeof raw!=='object')throw new Error('invalid');
+        const schema=Number(raw.schema||raw.schemaVersion||0);if(schema>24)throw new Error('future backup');
+        if(!raw.name&&!Array.isArray(raw.habits)&&!raw.profileCreated)throw new Error('empty');
+        if(!confirm('Restore this backup? Your current local profile will be replaced.'))return;
+        const restored=normalize(raw);restored.arcStart=WINTER_ARC_START;restored.arcLength=WINTER_ARC_LENGTH;restored.schema=24;if(!Array.isArray(restored.habits))restored.habits=[];restored.habits=restored.habits.slice(0,15);data=restored;sessionUnlocked=!data.pinHash;selectedHabit=null;morePanel='';tab='today';v24RebuildXp();save();render();showToast(data.pinHash?'Backup restored — PIN lock is active 🔒':'Backup restored ✅');
+      }catch(e){showToast(e.message==='future backup'?'This backup is from a newer app version.':'Invalid or incompatible backup.');}
+    };reader.readAsText(f);input.value='';
+  };
+
+  profileLogin=function(){return `<div class="login-shell"><div class="login-card"><div class="brand-mark">❄️</div><div class="kicker">LOCAL PROFILE</div><h1>Welcome back${data.name?', '+escapeHtml(data.name):''}.</h1><p>Enter your local PIN to unlock this device profile.</p><div class="stack"><input id="loginPin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="current-password" placeholder="4–6 digit PIN" aria-label="Local PIN">${v24LoginError?`<div class="v24-login-error" role="alert">${escapeHtml(v24LoginError)}</div>`:''}<button class="btn primary block" data-login>Unlock 🔓</button><button class="btn block" data-forgot-pin>Reset local profile</button></div><div class="security-note" style="margin-top:12px">Local profile only. The PIN is hashed; browser storage and backups are not encrypted.</div></div></div>`;}
+
+  function v24CreatorCompact(){
+    const n=creatorName(),h=creatorHandle();
+    return `<section class="v24-creator-compact"><span class="v25-credit-photo"><img src="./${escapeHtml((data.creatorPhoto||'creator-profile.jpg').replace(/^\.\//,''))}" alt="${escapeHtml(n)}" loading="eager" onerror="this.hidden=true;this.parentElement.classList.add('fallback')"><b>${escapeHtml((n||'V').slice(0,2).toUpperCase())}</b></span><div><span class="kicker">CREDIT BY</span><b>${escapeHtml(n)}</b><small>${escapeHtml(h||'@pandatvikas1')}</small></div><button class="btn" data-v20-nav="more" data-v20-more="creator">View →</button></section>`;
+  }
+  function v24RecoveryCard(){
+    if(!data.habits.length)return '';
+    let missed=0;for(let i=1;i<=2;i++){const d=addDays(today(),-i);const had=data.habits.some(h=>canUseHabitOn(h,d)&&active(h,d));if(had)break;missed++;}
+    return missed?`<section class="v24-recovery"><div><span class="kicker">🛟 RECOVERY PASS</span><h3>${missed} missed day${missed>1?'s':''}. No reset needed.</h3><p>Start again with the smallest version today. Your Arc history stays intact.</p></div><button class="btn primary" data-v20-nav="more" data-v20-more="manage">Next small win →</button></section>`:'';
+  }
+  function v24RoutineCard(){
+    const r=data.activeRoutine?data.routines.find(x=>x.id===data.activeRoutine):null;if(!r)return '';
+    const p=routineProgress(r),cur=routineCurrent(r);
+    return `<section class="v24-routine-card"><div class="v20-head"><div><div class="v20-kicker">ACTIVE ROUTINE</div><h2>${escapeHtml(r.name)}</h2></div><button class="btn small" data-finish-routine>Exit</button></div><div class="v24-routine-progress"><b>${p.doneCount}/${p.items.length}</b><span>completed</span></div><div class="progress"><i style="width:${p.pct}%"></i></div>${cur?`<div class="v24-routine-next"><span>${escapeHtml(cur.icon||'✅')}</span><div><b>Next: ${escapeHtml(cur.name)}</b><small>${escapeHtml(cur.action||'Smallest useful version')}</small></div><button class="btn primary" data-toggle="${cur.id}|${today()}">${done(cur,today())?'✓':'Complete'}</button></div>`:'<div class="note">Routine complete for today 🎉</div>'}</section>`;
+  }
+  function v24PriorityHabits(){
+    const top=data.habits.slice(0,3);if(!top.length)return `<div class="v24-empty"><b>Your first win starts here.</b><span>Add a habit to build today’s Priority habits.</span><button class="btn primary" data-v20-more="manage">＋ Add habit</button></div>`;
+    return top.map(h=>{const is=done(h,today()),fr=frozen(h,today());return `<article class="v24-priority ${is?'done':''}"><div class="v24-priority-icon">${escapeHtml(h.icon||'✅')}</div><div class="v24-priority-copy"><b>${escapeHtml(h.name)} ${h.private?'<span class="private-pill">🔒</span>':''}</b><span>${escapeHtml(h.action||'Smallest useful version')}</span><small>🔥 ${habitStats(h).run} day streak${h.time?` · ⏰ ${escapeHtml(h.time)}`:''}</small></div><button class="v24-check ${is?'done':''}" data-toggle="${h.id}|${today()}" ${fr?'disabled':''} aria-label="${is?'Undo':'Complete'} ${escapeHtml(h.name)}">${is?'✓':'○'}</button></article>`;}).join('')+(data.habits.length>3?`<button class="btn v24-viewall" data-v20-more="manage">View all ${data.habits.length} habits →</button>`:'');
+  }
+  function v20Today(){
+    const s=stats(),day=v13ArcDay(),arcPct=v13ArcProgress(),f=focusHabit(),score=personalScore();
+    return `<div class="v24-page">${v24CreatorCompact()}<section class="v24-greeting"><div><span class="kicker">TODAY · WINTER ARC 2026</span><h1>${data.name?'Good to see you, '+escapeHtml(data.name)+'.':'Your Arc starts here.'}</h1><p>Day ${day||0} / ${WINTER_ARC_LENGTH} · ${s.todayDone}/${data.habits.length} completed today</p></div><div class="v24-day-ring" style="--p:${arcPct}%"><b>${day||0}</b><span>DAY</span></div></section><section class="v24-arc-progress"><div><span class="kicker">ARC PROGRESS</span><b>${arcPct}%</b></div><div class="progress"><i style="width:${arcPct}%"></i></div><small>1 Oct → 31 Dec · 92 days</small></section>${v24RoutineCard()}${f?`<section class="v24-next"><div class="v20-next-label">NEXT WIN</div><div class="v24-next-row"><div class="v24-next-icon">${escapeHtml(f.icon||'✅')}</div><div><h2>${escapeHtml(f.name)}</h2><p>${escapeHtml(f.action||'Smallest useful version')}</p><small>🔥 ${habitStats(f).run} day streak</small></div><button class="v24-check main" data-toggle="${f.id}|${today()}" aria-label="${done(f,today())?'Undo':'Complete'} ${escapeHtml(f.name)}">${done(f,today())?'✓':'→'}</button></div></section>`:''}<section class="v24-section"><div class="v20-head"><h2>Priority habits</h2><span>${s.todayDone}/${data.habits.length}</span></div><div class="v24-priority-list">${v24PriorityHabits()}</div></section>${v24RecoveryCard()}<section class="v24-statbar"><div><b>${s.todayDone}</b><span>Today</span></div><div><b>${s.completed}</b><span>Arc wins</span></div><div><b>${score}</b><span>Score</span></div></section><section class="v24-checkpoint"><div><span class="kicker">NEXT CHECKPOINT</span><h3>Day ${nextMilestone(day||0)}</h3><p>Keep the next action small and repeatable.</p></div><span>🏁</span></section></div>`;
+  }
+
+  function v24Week(){
+    const ds=Array.from({length:7},(_,i)=>addDays(today(),i-6));
+    return `<div class="v24-page"><section class="v24-page-head"><span class="kicker">WEEK</span><h1>Your 7-day pattern.</h1><p>Tap a day to update completion. Future dates stay locked.</p></section><section class="v24-week-summary"><div><b>${weeklyScore()}%</b><span>weekly completion</span></div><div><b>${weeklyWins()}</b><span>wins this week</span></div><div><b>🔥 ${stats().best}</b><span>best streak</span></div></section><section class="v24-week-grid"><div class="v24-week-labels"><span>Habit</span>${ds.map(d=>`<span>${d<WINTER_ARC_START?'—':dateObj(d).toLocaleDateString(undefined,{weekday:'short'}).slice(0,2)}</span>`).join('')}</div>${data.habits.map(h=>`<div class="v24-week-row"><div class="v24-week-habit"><span>${escapeHtml(h.icon||'✅')}</span><b>${escapeHtml(h.name)}</b></div>${ds.map(d=>{const eligible=canUseHabitOn(h,d),future=d>today(),is=done(h,d),fr=frozen(h,d);return `<button class="v24-week-cell ${is?'done':''} ${fr?'freeze':''} ${d===today()?'today':''} ${future||!eligible?'disabled':''}" data-toggle="${h.id}|${d}" ${future||!eligible?'disabled':''} aria-label="${escapeHtml(h.name)} ${dateObj(d).toLocaleDateString()} ${is?'complete':fr?'frozen':future||!eligible?'unavailable':'open'}">${is?'✓':fr?'🛡':future||!eligible?'·':'○'}</button>`}).join('')}</div>`).join('')||'<div class="v24-empty"><b>No habits yet.</b><span>Add your first habit in More → Manage habits.</span></div>'}</section></div>`;
+  }
+
+  function v24Month(){
+    const m=data.month||'2026-10',ds=makeDays(m),first=new Date(Number(m.slice(0,4)),Number(m.slice(5,7))-1,1).getDay();
+    let eligible=0,doneN=0;for(const d of ds)for(const h of data.habits){if(canUseHabitOn(h,d)&&d<=today()){eligible++;if(done(h,d))doneN++;}}
+    const pct=eligible?Math.round(doneN/eligible*100):0;const monthNames={"2026-10":'October 2026',"2026-11":'November 2026',"2026-12":'December 2026'};
+    return `<div class="v24-page"><section class="v24-page-head"><span class="kicker">MONTH</span><div class="v24-head-actions"><div><h1>${monthNames[m]||m}</h1><p>Monthly pattern inside the Winter Arc.</p></div><div class="v24-month-nav"><button class="btn" data-month-shift="-1" ${m==='2026-10'?'disabled':''}>‹</button><button class="btn" data-month-shift="1" ${m==='2026-12'?'disabled':''}>›</button></div></div></section><section class="v24-month-summary"><div><b>${pct}%</b><span>completion</span></div><div><b>${doneN}</b><span>wins</span></div><div><b>${Math.max(0,Math.min(ds.length,dateDiff(WINTER_ARC_START,today())+1-(m==='2026-10'?0:m==='2026-11'?31:61)))}</b><span>elapsed days</span></div></section><section class="v24-calendar"><div class="v24-weekdays">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<span>${x}</span>`).join('')}</div><div class="v24-cal-grid">${Array.from({length:first},()=>'<i></i>').join('')}${ds.map(d=>{const future=d>today(),isToday=d===today();const dayDone=data.habits.length>0&&data.habits.every(h=>!canUseHabitOn(h,d)||done(h,d));const dayCount=data.habits.filter(h=>canUseHabitOn(h,d)&&done(h,d)).length;return `<button class="v24-cal-cell ${isToday?'today':''} ${future?'future':''} ${dayDone&&!future?'complete-day':''}" ${future?'disabled':''} title="${d}"><b>${Number(d.slice(-2))}</b><span>${future?'·':dayCount+'/'+data.habits.filter(h=>canUseHabitOn(h,d)).length}</span></button>`}).join('')}</div><div class="v24-legend"><span><i class="dot done"></i>Complete</span><span><i class="dot today"></i>Today</span><span><i class="dot future"></i>Future</span></div></section><section class="v24-section"><div class="v20-head"><h2>Monthly habit breakdown</h2><span>${data.habits.length} habits</span></div><div class="v24-breakdown">${data.habits.map(h=>{const el=ds.filter(d=>canUseHabitOn(h,d)&&d<=today()),dn=el.filter(d=>done(h,d)).length,p=el.length?Math.round(dn/el.length*100):0;return `<div class="v24-break-row"><div><b>${escapeHtml(h.icon||'✅')} ${escapeHtml(h.name)}</b><span>${dn}/${el.length} days · ${p}%</span></div><div class="progress"><i style="width:${p}%"></i></div></div>`}).join('')||'<div class="v24-empty"><span>Add habits to see monthly patterns.</span></div>'}</div></section></div>`;
+  }
+
+  function v24Arc(){
+    const day=v13ArcDay(),pct=v13ArcProgress();
+    const months=[['OCT','2026-10'],['NOV','2026-11'],['DEC','2026-12']];
+    const milestones=[3,7,14,21,30,45,60,75,90,92];
+    const best=v13BestHabit?v13BestHabit():null;
+    return `<div class="v24-page"><section class="v24-arc-hero"><div><span class="kicker">WINTER ARC 2026</span><h1>Day ${day||0} / 92</h1><p>1 Oct → 31 Dec · ${v13ArcRemaining()} days remaining</p></div><div class="v24-arc-pct">${pct}%</div><div class="progress"><i style="width:${pct}%"></i></div></section><section class="v24-section"><div class="v20-head"><h2>Three-month journey</h2><span>Current day highlighted</span></div><div class="v24-month-line">${months.map((m,i)=>{const start=i===0?1:i===1?32:62;const end=i===0?31:i===1?61:92;const current=day>=start&&day<=end;const doneM=day>end;return `<div class="v24-month-block ${current?'current':''} ${doneM?'done':''}"><b>${m[0]}</b><span>Days ${start}–${end}</span><i></i></div>`}).join('')}</div></section><section class="v24-section"><div class="v20-head"><h2>Milestones</h2><span>Next checkpoint ${nextMilestone(day||0)}</span></div><div class="v24-milestones">${milestones.map(m=>`<div class="v24-milestone ${day>=m?'done':''} ${day===m?'current':''}"><b>Day ${m}</b><span>${day>m?'✓ Complete':day===m?'You are here':'Upcoming'}</span></div>`).join('')}</div></section><section class="v24-section"><div class="v20-head"><h2>Your Arc Story</h2><span>Keep it useful</span></div><div class="v24-story"><div><b>Arc wins</b><span>${v13TotalWins()}</span></div><div><b>Best streak</b><span>🔥 ${stats().best}</span></div><div><b>Strongest habit</b><span>${best?escapeHtml(best.name):'Build your first win'}</span></div></div><div class="note">Missed days remain part of your history. Recovery means restarting the next small action, not resetting the Arc.</div></section></div>`;
+  }
+
+  function v20Rank(){
+    const local=v20LocalRank(),rows=v20Top20(),q=v20RankQuery.trim().toLowerCase();
+    const filtered=rows.filter(x=>String(x.display_name||'').toLowerCase().includes(q));
+    const my=v24RankMyGlobal;
+    return `<div class="v24-page"><section class="v24-rank-hero"><div><span class="kicker">ARC LEAGUE</span><h1>${my?.rank?'#'+my.rank:'Top 20'}</h1><p>${my?.rank?'Your exact public rank':'Community Rank is optional and private by default.'}</p></div><div><b>${local.score}</b><span>/100 score</span></div><div class="progress"><i style="width:${local.score}%"></i></div></section><section class="v24-section"><div class="v20-head"><div><span class="kicker">GLOBAL</span><h2>Top 20</h2></div><button class="v20-refresh" data-v20-rank-refresh aria-label="Refresh leaderboard">↻</button></div><input class="v24-rank-search" id="v20RankSearch" value="${escapeHtml(v20RankQuery)}" placeholder="Search Top 20 by name" aria-label="Search Top 20 by name"><div class="v24-ranklist">${v20RankStatus==='loading'?'<div class="v24-empty"><b>Loading Top 20…</b></div>':v20RankStatus==='offline'||v20RankStatus==='error'?`<div class="v24-empty"><b>${escapeHtml(v20RankError)}</b><span>Local tracker remains fully usable.</span></div>`:filtered.length?filtered.map((x)=>{const rank=x.__rank||v20RankRows.indexOf(x)+1;const name=escapeHtml(x.display_name||'Arc member');const score=Number(x.rankScore??x.rank_score)||0;return `<div class="v24-rank-row ${data.cloudUserId&&x.id===data.cloudUserId?'me':''}"><span class="num">#${rank}</span><span class="avatar">${escapeHtml((x.display_name||'?').slice(0,1).toUpperCase())}</span><div><b>${name}</b><small>${Number(x.total_wins)||0} wins · 🔥 ${Number(x.best_streak)||0} streak</small></div><strong>${score}</strong></div>`}).join(''):'<div class="v24-empty"><b>No public profiles yet.</b><span>Turn on Community Sync + Public Profile to appear.</span></div>'}</div>${v20RankStatus==='ready'?`<div class="v24-rank-foot">${my?.rank?`Your exact public rank: <b>#${my.rank}</b>`:'Your profile is private.'}</div>`:''}</section><section class="note"><b>How scoring works</b><br>75% weekly consistency + 15% best streak + 10% weekly wins. Ties are deterministic.</section></div>`;
+  }
+
+  function v20More(){
+    if(morePanel){
+      let body='';
+      try{body=morePanel==='manage'?manageHabitsHtml():morePanel==='goals'?goalsHtml():morePanel==='routine'?routineHtml():morePanel==='checkin'?checkinHtml():morePanel==='journal'?journalHtml():morePanel==='sleep'?sleepHtml():morePanel==='planner'?plannerHtml():morePanel==='reminders'?remindersHtml():morePanel==='security'?securityHtml():morePanel==='settings'?settingsHtml():morePanel==='backup'?backupPage():morePanel==='creator'?creatorPage():morePanel==='about'?aboutPage():morePanel==='getapp'?getAppPage():morePanel==='achievements'?achievementsPage():morePanel==='insights'?insightsPage():morePanel==='credits'?creditsHtml():morePanel==='rank'?v20Rank():morePanel==='arc'?v24Arc():morePanel==='month'?v24Month():morePanel==='profile'?v20Profile():'<div class="v24-empty">Tool unavailable.</div>'}catch(e){body='<div class="v24-empty">Tool unavailable. Your tracker data is safe.</div>'}
+      return `<div class="v24-page"><section class="v24-detail-head"><button class="btn" data-v20-close>← More</button><h1>${escapeHtml(morePanel.charAt(0).toUpperCase()+morePanel.slice(1))}</h1></section>${body}</div>`;
+    }
+    const tile=(icon,title,sub,id)=>`<button class="v24-tool-tile" data-v20-more="${id}"><span>${icon}</span><div><b>${escapeHtml(title)}</b><small>${escapeHtml(sub)}</small></div><strong>→</strong></button>`;
+    return `<div class="v24-page"><section class="v24-page-head"><span class="kicker">MORE</span><h1>Everything advanced, in one place.</h1><p>Today stays focused. Your deeper tools stay here.</p></section><section class="v24-group"><h2>Your Journey</h2>${tile('📈','Insights','Spot patterns and trends.','insights')}${tile('🏆','Achievements','Milestones and progress.','achievements')}${tile('❄️','Arc','Your 92-day journey.','arc')}${tile('🗓️','Month','Calendar and monthly breakdown.','month')}${tile('👤','Profile','Your identity and share card.','profile')}</section><section class="v24-group"><h2>Daily Tools</h2>${tile('✅','Manage habits','Add, edit and remove habits.','manage')}${tile('🎯','Goals','One focus and measurable target.','goals')}${tile('🔁','Routines','Build and run step-by-step routines.','routine')}${tile('🗓️','Day planner','Set preferred times.','planner')}${tile('🌤️','Mood & energy','Quick private check-in.','checkin')}${tile('✍️','Journal','One-line reflection.','journal')}${tile('😴','Sleep','Track sleep basics.','sleep')}${tile('⏰','Reminders','Optional local reminders.','reminders')}${tile('🔐','Privacy & security','PIN and profile security.','security')}</section><section class="v24-group"><h2>Community & App</h2><button class="v24-tool-tile" data-open-share-center><span>↗</span><div><b>Share & invite</b><small>4:5 card and friend invite.</small></div><strong>→</strong></button><button class="v24-tool-tile" data-open-compare><span>⚔️</span><div><b>Compare with a friend</b><small>Shared progress snapshot.</small></div><strong>→</strong></button><button class="v24-tool-tile" data-open-cloud><span>☁️</span><div><b>Community Sync</b><small>Optional cloud sharing.</small></div><strong>→</strong></button>${tile('🏆','Top 20 Rank','Public leaderboard and exact rank.','rank')}${tile('📱','Get the App','Install PWA when supported.','getapp')}${tile('👤','Creator','Meet the creator.','creator')}${tile('❤️','Credits','Creator credit and photos.','credits')}${tile('💾','Backup','Export and restore.','backup')}${tile('⚙️','Settings','Theme, sync and data.','settings')}${tile('ℹ️','About Winter Arc','How the app works.','about')}</section></div>`;
+  }
+
+  function v20Shell(){
+    const initial=escapeHtml((data.name||'A').slice(0,1).toUpperCase());
+    const body=tab==='today'?v20Today():tab==='week'?v24Week():tab==='month'?v24Month():tab==='arc'?v24Arc():tab==='rank'?v20Rank():tab==='profile'?v20Profile():v20More();
+    const labels=[['today','🏠','Today'],['week','▦','Week'],['month','🗓️','Month'],['arc','❄️','Arc'],['more','•••','More']];
+    document.body.classList.toggle('dark',!!data.dark);
+    document.body.innerHTML=`<div class="v24-app"><header class="v24-top"><button class="v24-iconbtn" data-v20-menu aria-label="Open menu">☰</button><div class="v24-brand"><b>Winter Arc</b><span>2026 · ${escapeHtml(data.name||'Your Arc')}</span></div><button class="v24-iconbtn" data-v20-share aria-label="Share your Arc">↗</button><button class="v24-profile-btn" data-v20-nav="profile" aria-label="Open Profile">${initial}</button></header><main class="v24-main">${body}</main><nav class="v24-bottom"><div>${labels.map(([id,icon,label])=>`<button class="${tab===id?'active':''}" data-v20-nav="${id}"><b>${icon}</b><span>${label}</span></button>`).join('')}</div></nav>${v20MenuOpen?v20Menu():''}${selectedHabit?habitOverlay():''}${newHabitOpen?newHabitModal():''}${v24DeleteHabitId?v24DeleteConfirm():''}${window.__v14ShareCenter?v14ShareModal():''}${window.__v14Compare?v14CompareModal():''}${window.__v14Cloud?v14CloudModal():''}</div>`;
+    if(tab==='rank'&&v20RankStatus==='idle')setTimeout(v20LoadRank,0);
+  }
+
+  const __v24PrevRenderV20=renderV20;
+  renderV20=function(){
+    v20Style();
+    if(isLocked()||!data.profileCreated||!data.onboardingDone){__v24PrevRenderV20();document.documentElement.classList.remove('v24-modal-open');return;}
+    v20Shell();
+    const hasModal=!!document.querySelector('.overlay')||v20MenuOpen||!!newHabitOpen||!!v24DeleteHabitId;
+    document.documentElement.classList.toggle('v24-modal-open',hasModal);
+  };
+  render=renderV20;
+
+  // Make add-habit action use the real modal instead of prompt().
+  document.addEventListener('click',async e=>{
+    const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.v24Freeze!==undefined){
+      e.preventDefault();e.stopImmediatePropagation();
+      const h=data.habits.find(x=>x.id===selectedHabit);
+      if(h)toggleFreeze(h,today());
+      return;
+    }
+    if(b.dataset.v24DeleteCancel!==undefined){v24DeleteHabitId=null;renderV20();return;}
+    if(b.dataset.v24DeleteConfirm!==undefined){const h=data.habits.find(x=>x.id===v24DeleteHabitId);if(h){const monthKeys=new Set(Object.keys(data.bonusEvents||{}));data.habits=data.habits.filter(x=>x.id!==h.id);Object.keys(data.checks).forEach(k=>{if(k.startsWith(h.id+'|'))delete data.checks[k]});Object.keys(data.freezes).forEach(k=>{if(k.startsWith(h.id+'|'))delete data.freezes[k]});delete data.habitNotes[h.id];delete data.reminders[h.id];data.goalLinks=data.goalLinks.filter(id=>id!==h.id);data.routines.forEach(r=>{r.items=r.items.filter(id=>id!==h.id);if(r.step>r.items.length)r.step=r.items.length});if(data.activeRoutine&&!data.routines.some(r=>r.id===data.activeRoutine))data.activeRoutine=null;monthKeys.forEach(d=>recalcBonus(d));v24RebuildXp();save();}v24DeleteHabitId=null;selectedHabit=null;renderV20();showToast('Habit deleted');return;}
+    if(b.dataset.closeHabit!==undefined){selectedHabit=null;renderV20();return;}
+    if(b.dataset.saveHabit!==undefined){saveHabitSettings();return;}
+    if(b.dataset.quickNewHabit!==undefined){openNewHabit();return;}
+    if(b.dataset.v24Month===undefined && b.dataset.v24Arc===undefined){}
+  });
+
+  // Better login feedback without blocking alert popups.
+  document.addEventListener('click',async e=>{
+    const b=e.target.closest('button');if(!b||b.dataset.login===undefined)return;
+    const p=$('#loginPin')?.value.trim()||'';if(!/^\d{4,6}$/.test(p)){v24LoginError='Enter a 4–6 digit numeric PIN.';render();return;}
+    const h=await hashPin(p);if(h!==data.pinHash){v24LoginError='Wrong PIN. Try again.';render();setTimeout(()=>$('#loginPin')?.focus(),0);return;}
+    v24LoginError='';data.lastLogin=today();save();sessionUnlocked=true;render();showToast('Unlocked 🔓');
+  },{capture:true});
+
+  // Secure anonymous cloud session for RLS-owned writes. Public leaderboard reads remain possible.
+  cloudHeaders=function(token){return {'apikey':CLOUD_CFG.anonKey,'Authorization':'Bearer '+(token||v24AccessToken||CLOUD_CFG.anonKey),'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'}};
+  let v24SupabaseClient=null;
+  async function v24CloudSession(){
+    if(!cloudReady())throw new Error('Backend not configured');
+    if(!window.supabase)throw new Error('Supabase client not loaded');
+    if(!v24SupabaseClient)v24SupabaseClient=window.supabase.createClient(CLOUD_CFG.url,CLOUD_CFG.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+    let session=(await v24SupabaseClient.auth.getSession()).data.session;
+    if(!session){const r=await v24SupabaseClient.auth.signInAnonymously();if(r.error)throw r.error;session=r.data.session;}
+    if(!session)throw new Error('No cloud session');
+    data.cloudUserId=session.user.id;v24AccessToken=session.access_token;save();return session;
+  }
+
+  cloudSync=async function(opts={}){
+    if(!data.cloudOptIn){data.cloudStatus='Community Sync off';save();return false;}
+    if(!cloudReady()){data.cloudStatus='Backend not configured';save();if(!opts.silent)showToast('Community backend is not configured');return false;}
+    try{
+      data.cloudStatus='Syncing…';save();if(!opts.silent)renderV20();
+      const session=await v24CloudSession();
+      const snap=cloudSnapshot();snap.id=session.user.id;snap.community_opt_in=true;snap.public_profile=!!data.publicProfile;
+      const r=await fetch(CLOUD_CFG.url+'/rest/v1/arc_users',{method:'POST',headers:{apikey:CLOUD_CFG.anonKey,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify(snap)});
+      if(!r.ok)throw new Error('sync '+r.status);
+      data.cloudLastSync=new Date().toISOString();data.cloudStatus='Synced ✓';save();if(typeof v19SyncActiveChallenge==='function'){try{await v19SyncActiveChallenge();}catch(_){}}if(!opts.silent)renderV20();if(!opts.silent)showToast('Progress synced ☁️');return true;
+    }catch(e){data.cloudStatus='Sync failed — local data is safe';save();if(!opts.silent)showToast('Cloud sync failed — local tracker still works');return false;}
+  };
+  async function cloudDeactivate(){
+    if(!data.cloudUserId||!cloudReady())return false;
+    try{const session=await v24CloudSession();const r=await fetch(CLOUD_CFG.url+'/rest/v1/arc_users?id=eq.'+encodeURIComponent(session.user.id),{method:'DELETE',headers:{apikey:CLOUD_CFG.anonKey,Authorization:'Bearer '+session.access_token}});if(!r.ok)throw new Error(String(r.status));data.cloudUserId='';data.cloudLastSync='';data.cloudStatus='Community Sync off';save();return true;}catch(e){data.cloudStatus='Remote cleanup could not be verified';save();return false;}
+  }
+
+  // Exact Top 20 RPC + exact own rank. No Instagram is returned to the player UI.
+  v20LoadRank=async function(){
+    if(v20RankStatus==='loading')return;
+    v20RankStatus='loading';v20RankError='';v24RankMyGlobal=null;renderV20();
+    if(!cloudReady()){v20RankStatus='offline';v20RankError='Community backend is not configured.';v20RankRows=[];renderV20();return;}
+    try{
+      let rows=await rankFetch('get_public_leaderboard',{p_limit:20});
+      v20RankRows=(Array.isArray(rows)?rows:[]).map((x,i)=>Object.assign({},x,{rankScore:Number(x.rank_score)||0,__rank:Number(x.rank)||i+1}));
+      if(data.cloudOptIn&&data.publicProfile){try{const session=await v24CloudSession();const rr=await rankFetch('get_public_rank',{p_user_id:session.user.id});if(Array.isArray(rr)&&rr[0])v24RankMyGlobal=Object.assign({},rr[0],{rank:Number(rr[0].rank)||null});}catch(e){}}
+      try{const ar=await rankFetch('get_public_active_members',{p_minutes:15,p_limit:6});v20RankActive=Array.isArray(ar)?ar:[]}catch(e){}
+      v20RankStatus='ready';v20RankUpdated=Date.now();renderV20();
+    }catch(e){v20RankStatus='error';v20RankError='Could not load the public leaderboard. Try Refresh.';v20RankRows=[];renderV20();}
+  };
+
+  // Keep the score helper aligned with fixed Arc metrics.
+  v20LocalRank=function(){
+    const x=typeof cloudSnapshot==='function'?cloudSnapshot():null;const score=x?Number(x.rank_score)||0:personalScore();const week=x?Number(x.week_score)||0:weeklyScore();const league=score>=90?'Diamond':score>=75?'Gold':score>=60?'Silver':score>=40?'Bronze':'Starter';return {score,league,week};
+  };
+  v20Filtered=function(){const q=v20RankQuery.trim().toLowerCase();return v20RankRows.slice(0,20).filter(x=>String(x.display_name||'').toLowerCase().includes(q));};
+
+  // Community off / public off must remove or privatize remote state.
+  const __v24OriginalCloudHandler=cloudSettingsHtml;
+  cloudSettingsHtml=function(){
+    return `<section class="v14-card"><div class="v14-section-head"><div><span class="v14-kicker">COMMUNITY SYNC</span><h2>Optional cloud sharing</h2></div><span class="v14-counter">${escapeHtml(data.cloudStatus||'Off by default')}</span></div><label class="v14-toggle-row"><input id="cloudOptIn" type="checkbox" ${data.cloudOptIn?'checked':''}><span><b>Community Sync</b><small>Syncs display name, Arc progress, wins, best streak and last-seen. Private habit names, journal, sleep, mood and PIN stay local.</small></span></label><label class="v14-toggle-row"><input id="publicProfile" type="checkbox" ${data.publicProfile?'checked':''}><span><b>Public Profile</b><small>Only a public profile appears in the Top 20.</small></span></label><div class="v14-cloud-actions"><button class="v14-pill-btn primary" data-save-cloud>Save choice</button><button class="v14-pill-btn" data-cloud-sync>Retry sync</button></div><small class="v14-cloud-note">Cloud sync requires a configured Supabase backend. The tracker remains usable offline.</small></section>`;
+  };
+
+  // Add safer cloud save/deactivate behavior by replacing the old bridge at source-level friendly hooks.
+  document.addEventListener('click',async e=>{
+    const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.openShareCenter!==undefined||b.dataset.openCompare!==undefined||b.dataset.openCloud!==undefined)return;
+    if(b.dataset.saveCloud!==undefined){
+      e.preventDefault();e.stopImmediatePropagation();
+      const nextOpt=!!$('#cloudOptIn')?.checked,nextPublic=!!$('#publicProfile')?.checked;
+      const wasOpt=data.cloudOptIn,wasPublic=data.publicProfile;
+      data.cloudOptIn=nextOpt;data.publicProfile=nextPublic;save();
+      let ok=true;
+      if(!nextOpt&&wasOpt)ok=await cloudDeactivate();
+      else if(nextOpt)ok=await cloudSync();
+      renderV20();showToast(nextOpt?(ok?'Community settings saved ☁️':'Saved locally; cloud sync needs attention'): (wasPublic||wasOpt?'Community sharing removed/private':'Community Sync off'));return;
+    }
+  },{capture:true});
+
+  // Smaller, readable, mobile-first UI layer + focus states + modal scroll lock.
+  function v24PolishStyle(){
+    if(document.getElementById('v24-polish-style'))return;
+    const s=document.createElement('style');s.id='v24-polish-style';s.textContent=`
+      :root{--v24-text:14px;--v24-muted:12px}
+      html.v24-modal-open,html.v24-modal-open body{overflow:hidden}
+      body{font-size:var(--v24-text);line-height:1.45}
+      button,input,textarea,select{font-size:13px;line-height:1.25}
+      button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid color-mix(in srgb,var(--green,#3da35d) 45%,white);outline-offset:2px}
+      .v24-app{width:100%;max-width:760px;margin:auto;min-height:100dvh;padding-bottom:88px;color:var(--ink)}
+      .v24-top{position:sticky;top:0;z-index:70;display:grid;grid-template-columns:44px minmax(0,1fr) 44px 44px;gap:8px;align-items:center;padding:10px 12px;background:color-mix(in srgb,var(--bg,#f5f3ed) 94%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+      .v24-iconbtn,.v24-profile-btn{width:44px;height:44px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);display:grid;place-items:center;font-weight:950}
+      .v24-profile-btn{background:var(--soft);color:var(--green2)}.v24-brand{min-width:0}.v24-brand b{display:block;font-size:18px}.v24-brand span{display:block;font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .v24-main{padding:14px 12px 0}.v24-page{display:grid;gap:14px}.v24-page-head h1{margin:4px 0;font-size:28px;letter-spacing:-.045em}.v24-page-head p,.v24-greeting p{margin:0;color:var(--muted);font-size:12px}.kicker,.v20-kicker,.v20-next-label,.v24-rank-hero .kicker{font-size:11px;letter-spacing:.1em;font-weight:950;text-transform:uppercase;color:var(--green2)}
+      .v24-greeting{display:grid;grid-template-columns:minmax(0,1fr) 82px;gap:14px;align-items:center}.v24-greeting h1{font-size:27px;line-height:1.05;letter-spacing:-.045em;margin:5px 0}.v24-day-ring{width:82px;height:82px;border-radius:50%;display:grid;place-items:center;align-content:center;background:conic-gradient(var(--green) var(--p),#dce5dd 0);position:relative}.v24-day-ring:after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--card)}.v24-day-ring b,.v24-day-ring span{position:relative;z-index:1}.v24-day-ring b{font-size:23px}.v24-day-ring span{font-size:10px;color:var(--muted);font-weight:900}
+      .v24-arc-progress,.v24-next,.v24-checkpoint,.v24-routine-card,.v24-recovery,.v24-arc-hero,.v24-rank-hero{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;box-shadow:0 8px 24px rgba(20,30,24,.05)}
+      .v24-arc-progress>div:first-child{display:flex;justify-content:space-between;align-items:center}.v24-arc-progress b{font-size:23px}.v24-arc-progress small{display:block;color:var(--muted);font-size:11px;margin-top:7px}
+      .progress{height:9px;background:#e5ebe5;border-radius:999px;overflow:hidden}.progress i{display:block;height:100%;background:var(--green);border-radius:inherit}
+      .v24-next h2{font-size:22px;margin:5px 0}.v24-next p{margin:0;color:var(--muted);font-size:13px}.v24-next-row{display:grid;grid-template-columns:48px minmax(0,1fr) 50px;gap:10px;align-items:center;margin-top:10px}.v24-next-icon,.v24-priority-icon{display:grid;place-items:center;background:var(--soft2);border:1px solid var(--line);border-radius:14px}.v24-next-icon{width:48px;height:48px;font-size:22px}
+      .v24-check{min-width:46px;min-height:46px;border:1px solid var(--green);background:var(--green);color:#fff;border-radius:14px;font-weight:950;font-size:17px}.v24-check.done{background:var(--green2)}.v24-check:disabled{opacity:.45}
+      .v24-section{display:grid;gap:8px}.v24-priority-list{display:grid;gap:8px}.v24-priority{display:grid;grid-template-columns:42px minmax(0,1fr) 46px;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:9px}.v24-priority.done{background:var(--soft)}.v24-priority-icon{width:42px;height:42px;font-size:19px}.v24-priority-copy{min-width:0}.v24-priority-copy b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v24-priority-copy span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}.v24-priority-copy small{display:block;font-size:11px;color:var(--muted);margin-top:3px}.private-pill{font-size:10px}
+      .v24-viewall{width:100%;min-height:44px}.v24-recovery{display:flex;justify-content:space-between;gap:12px;align-items:center;background:linear-gradient(145deg,var(--soft),var(--card))}.v24-recovery h3{margin:3px 0;font-size:16px}.v24-recovery p{margin:0;color:var(--muted);font-size:12px}.v24-statbar,.v24-week-summary,.v24-month-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.v24-statbar>div,.v24-week-summary>div,.v24-month-summary>div{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:11px}.v24-statbar b,.v24-week-summary b,.v24-month-summary b{display:block;font-size:19px}.v24-statbar span,.v24-week-summary span,.v24-month-summary span{display:block;font-size:11px;color:var(--muted);margin-top:3px}.v24-checkpoint{display:flex;justify-content:space-between;align-items:center}.v24-checkpoint h3{font-size:18px;margin:3px 0}.v24-checkpoint p{font-size:12px;color:var(--muted);margin:0}.v24-checkpoint>span{font-size:27px}
+      .v24-creator-compact{display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:9px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:8px}.v24-creator-compact img{width:46px;height:46px;border-radius:13px;object-fit:cover}.v24-creator-compact b{display:block;font-size:13px}.v24-creator-compact small{display:block;font-size:11px;color:var(--muted)}.v24-creator-compact .btn{min-height:38px}
+      .v24-week-grid{overflow:auto;display:grid;gap:7px}.v24-week-labels,.v24-week-row{display:grid;grid-template-columns:120px repeat(7,minmax(38px,1fr));gap:5px;align-items:center;min-width:470px}.v24-week-labels{position:sticky;top:66px;z-index:2}.v24-week-labels span{font-size:11px;color:var(--muted);text-align:center;font-weight:900}.v24-week-labels span:first-child{text-align:left}.v24-week-row{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:7px}.v24-week-habit{min-width:0;display:flex;gap:7px;align-items:center}.v24-week-habit b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v24-week-cell{min-height:44px;border:1px solid var(--line);border-radius:11px;background:var(--soft2);font-weight:950}.v24-week-cell.done{background:var(--green);border-color:var(--green);color:#fff}.v24-week-cell.freeze{background:#edf2df}.v24-week-cell.today{outline:2px solid color-mix(in srgb,var(--green) 45%,transparent);outline-offset:1px}.v24-week-cell.disabled{opacity:.42}
+      .v24-head-actions{display:flex;justify-content:space-between;gap:12px;align-items:end}.v24-month-nav{display:flex;gap:5px}.v24-month-nav .btn{min-width:44px;min-height:44px}.v24-calendar{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px}.v24-weekdays,.v24-cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.v24-weekdays span{text-align:center;color:var(--muted);font-weight:900;font-size:11px;padding:5px 0}.v24-cal-cell{min-height:45px;border:1px solid var(--line);border-radius:11px;background:var(--soft2);display:grid;place-items:center;align-content:center;gap:2px;color:var(--ink)}.v24-cal-cell b{font-size:13px}.v24-cal-cell span{font-size:10px;color:var(--muted)}.v24-cal-cell.today{outline:3px solid color-mix(in srgb,var(--green) 45%,transparent);outline-offset:1px;background:var(--card)}.v24-cal-cell.complete-day{background:var(--green);border-color:var(--green);color:#fff}.v24-cal-cell.complete-day span{color:#fff}.v24-cal-cell.future{opacity:.35}.v24-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font-size:11px}.v24-legend .dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:4px;background:var(--line)}.v24-legend .dot.done{background:var(--green)}.v24-legend .dot.today{outline:2px solid var(--green)}
+      .v24-breakdown{display:grid;gap:8px}.v24-break-row{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px}.v24-break-row>div:first-child{display:flex;justify-content:space-between;gap:9px}.v24-break-row b{font-size:12px}.v24-break-row span{font-size:11px;color:var(--muted)}.v24-break-row .progress{margin-top:7px}
+      .v24-arc-hero{background:linear-gradient(145deg,#173f3a,#193a2d);color:#fff;display:grid;gap:7px}.v24-arc-hero .kicker{color:#c5ead2}.v24-arc-hero h1{font-size:33px;margin:2px 0}.v24-arc-hero p{margin:0;color:#d8ece1;font-size:12px}.v24-arc-pct{text-align:right;font-weight:950;font-size:27px}.v24-month-line{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.v24-month-block{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px}.v24-month-block b{display:block;font-size:16px}.v24-month-block span{font-size:11px;color:var(--muted)}.v24-month-block i{display:block;height:7px;border-radius:99px;background:var(--line);margin-top:9px}.v24-month-block.current{background:var(--soft);border-color:#9fc9aa}.v24-month-block.current i,.v24-month-block.done i{background:var(--green)}.v24-milestones{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.v24-milestone{padding:10px;background:var(--card);border:1px solid var(--line);border-radius:13px}.v24-milestone b{display:block;font-size:13px}.v24-milestone span{display:block;color:var(--muted);font-size:11px;margin-top:2px}.v24-milestone.current{border-color:var(--green);background:var(--soft)}.v24-story{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.v24-story>div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px}.v24-story b{display:block;font-size:11px}.v24-story span{display:block;font-size:12px;margin-top:4px}
+      .v24-rank-hero{background:linear-gradient(145deg,#173f3a,#183b2d);color:#fff}.v24-rank-hero{display:grid;grid-template-columns:1fr auto;gap:5px;align-items:end}.v24-rank-hero h1{font-size:33px;margin:3px 0}.v24-rank-hero p{margin:0;color:#d8ece1;font-size:12px}.v24-rank-hero>div:nth-child(2){text-align:right}.v24-rank-hero>div:nth-child(2)>b{display:block;font-size:25px}.v24-rank-hero>div:nth-child(2)>span{font-size:10px;color:#c8e4d4}.v24-rank-hero .progress{grid-column:1/-1;background:rgba(255,255,255,.15)}.v24-rank-search{width:100%;min-height:46px;border:1px solid var(--line);border-radius:13px;background:var(--card);color:var(--ink);padding:11px 12px;font-size:13px}.v24-ranklist{display:grid;gap:7px}.v24-rank-row{display:grid;grid-template-columns:30px 38px minmax(0,1fr) auto;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:9px}.v24-rank-row.me{background:var(--soft);border-color:#9fc9aa}.v24-rank-row .num{font-size:11px;color:var(--muted);font-weight:950;text-align:center}.v24-rank-row .avatar{width:36px;height:36px;border-radius:12px;background:var(--soft);color:var(--green2);display:grid;place-items:center;font-weight:950}.v24-rank-row b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v24-rank-row small{display:block;font-size:11px;color:var(--muted);margin-top:2px}.v24-rank-row strong{font-size:15px}.v24-rank-foot{padding:11px;border-radius:13px;background:var(--soft);font-size:12px}
+      .v24-group{display:grid;gap:7px}.v24-group h2{font-size:14px;margin:2px 1px;color:var(--muted)}.v24-tool-tile{width:100%;min-height:64px;display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);border-radius:15px;background:var(--card);color:var(--ink);padding:10px}.v24-tool-tile>span{width:38px;height:38px;border-radius:11px;background:var(--soft);display:grid;place-items:center;font-size:18px}.v24-tool-tile b{display:block;font-size:13px}.v24-tool-tile small{display:block;font-size:11px;color:var(--muted);margin-top:2px}.v24-tool-tile strong{font-size:18px;color:var(--green2)}
+      .v24-detail-head{display:flex;gap:10px;align-items:center}.v24-detail-head h1{margin:0;font-size:26px}.v24-empty{display:grid;gap:4px;background:var(--card);border:1px dashed var(--line);border-radius:15px;padding:14px}.v24-empty b{font-size:13px}.v24-empty span{font-size:12px;color:var(--muted)}
+      .v24-routine-progress{display:flex;align-items:baseline;gap:6px;margin:8px 0}.v24-routine-progress b{font-size:20px}.v24-routine-progress span{font-size:11px;color:var(--muted)}.v24-routine-next{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:8px;align-items:center;margin-top:10px}.v24-routine-next>span{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:var(--soft)}.v24-routine-next b{display:block;font-size:12px}.v24-routine-next small{display:block;font-size:11px;color:var(--muted);margin-top:2px}.v24-login-error{padding:9px 10px;border-radius:11px;background:#fff0f0;color:#a33;font-size:12px}
+      .v24-confirm-modal{max-width:520px}.danger-btn{color:var(--danger,#b44040)!important}.overlay{touch-action:manipulation}
+      .file-btn{display:flex;align-items:center;justify-content:center;min-height:46px;border:1px solid var(--line);border-radius:13px;background:var(--card);font-size:13px;font-weight:900;cursor:pointer}.file-btn input{position:absolute;opacity:0;width:1px;height:1px}
+      @media(max-width:520px){.v24-main{padding-left:9px;padding-right:9px}.v24-week-grid{margin-inline:-9px;padding-inline:9px}.v24-story{grid-template-columns:1fr}.v24-month-line{gap:6px}.v24-milestones{grid-template-columns:1fr 1fr}.v24-recovery{display:grid}.v24-greeting h1{font-size:25px}.v24-tool-tile{min-height:68px}}
+      @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+      body.dark .v24-login-error{background:#3a2020;color:#ffc0c0}
+      /* Keep legacy preserved screens readable under the V24.1 shell. */
+      .v24-app small,.v24-app .smalltext,.v24-app .muted,.v24-app .note{font-size:11px!important;line-height:1.4}
+      .v24-app .v20-kicker,.v24-app .v13-kicker,.v24-app .v14-kicker,.v24-app .v18-kicker{font-size:11px!important}
+      .v24-app input,.v24-app textarea,.v24-app select{min-height:44px}
+      .v24-app .v20-smallcheck,.v24-app .v18-btn,.v24-app .v14-pill-btn,.v24-app .v13-share-btn{min-height:44px}
+      .v24-app .v20-habit-meta,.v24-app .v20-next-action,.v24-app .v24-story span{font-size:11px!important}
+    `;document.head.appendChild(s);
+  }
+  v24PolishStyle();
+
+  // Overlay/backdrop + Android/back-button behavior.
+  document.addEventListener('click',e=>{const ov=e.target.closest('.overlay');if(ov&&e.target===ov){if(ov.querySelector('.v24-confirm-modal')){v24DeleteHabitId=null;}else if(ov.classList.contains('v24-modal')&&selectedHabit){selectedHabit=null;}else{window.__v14ShareCenter=false;window.__v14Compare=false;window.__v14Cloud=false;v20MenuOpen=false;newHabitOpen=false;}renderV20();}},false);
+  window.addEventListener('popstate',()=>{if(v20MenuOpen||selectedHabit||newHabitOpen||v24DeleteHabitId||window.__v14ShareCenter||window.__v14Compare||window.__v14Cloud){v20MenuOpen=false;selectedHabit=null;newHabitOpen=false;v24DeleteHabitId=null;window.__v14ShareCenter=false;window.__v14Compare=false;window.__v14Cloud=false;renderV20();}});
+  window.addEventListener('keydown',e=>{if(e.key==='Escape'&&(v20MenuOpen||selectedHabit||newHabitOpen||v24DeleteHabitId||window.__v14ShareCenter||window.__v14Compare||window.__v14Cloud)){e.preventDefault();v20MenuOpen=false;selectedHabit=null;newHabitOpen=false;v24DeleteHabitId=null;window.__v14ShareCenter=false;window.__v14Compare=false;window.__v14Cloud=false;renderV20();}});
+
+  // Rank search updates only the list; no whole-page render on every keystroke.
+  const v24RankSearchListener=e=>{
+    if(e.target?.id!=='v20RankSearch')return;
+    v20RankQuery=e.target.value;
+    const box=document.querySelector('.v24-ranklist');if(!box)return;
+    const q=v20RankQuery.trim().toLowerCase();const rows=v20RankRows.slice(0,20).filter(x=>String(x.display_name||'').toLowerCase().includes(q));
+    box.innerHTML=rows.length?rows.map(x=>{const rank=x.__rank||v20RankRows.indexOf(x)+1;const name=escapeHtml(x.display_name||'Arc member');const score=Number(x.rankScore??x.rank_score)||0;return `<div class="v24-rank-row ${data.cloudUserId&&x.id===data.cloudUserId?'me':''}"><span class="num">#${rank}</span><span class="avatar">${escapeHtml((x.display_name||'?').slice(0,1).toUpperCase())}</span><div><b>${name}</b><small>${Number(x.total_wins)||0} wins · 🔥 ${Number(x.best_streak)||0} streak</small></div><strong>${score}</strong></div>`}).join(''):'<div class="v24-empty"><b>No matching names.</b><span>Try another display name.</span></div>';
+  };
+  document.addEventListener('input',v24RankSearchListener,{passive:true});
+
+  // Primary navigation keeps query-tab URLs stable for refresh/deep links.
+  const __v24NavPush=history.pushState.bind(history);
+  document.addEventListener('click',e=>{const b=e.target.closest('[data-v20-nav]');if(!b)return;const n=b.dataset.v20Nav;if(['today','week','month','arc','profile','more','rank'].includes(n)){try{const u=new URL(location.href);u.searchParams.set('tab',n);__v24NavPush({v24Tab:n},'',u.href);}catch(_){} }},{capture:false});
+
   renderV20();
+
 })();
 
 })();
